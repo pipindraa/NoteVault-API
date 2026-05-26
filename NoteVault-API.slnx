@@ -1,3 +1,6 @@
 <Solution>
   <Project Path="NoteVault-API/NoteVault-API.csproj" />
+  <Project Path="NoteVault.BLL/NoteVault.BLL.csproj" Id="ad97139e-f479-4e59-9f2b-d7019d18512f" />
+  <Project Path="NoteVault.DAL/NoteVault.DAL.csproj" Id="62a213c7-747f-428b-9d7d-8abd8c942c43" />
+  <Project Path="NoteVault.Tests/NoteVault.Tests.csproj" Id="e80335f6-b21c-44bc-832d-50c107d98012" />
 </Solution>
