@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NoteVault-API\NoteVault-API.csproj" />
-    <ProjectReference Include="..\NoteVault.BLL\NoteVault.BLL.csproj" />
+    <ProjectReference Include="..\..\src\NoteVault-API\NoteVault.API.csproj" />
+    <ProjectReference Include="..\..\src\NoteVault.BLL\NoteVault.BLL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
