@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace NoteVault.BLL.DTOs.Notes
+﻿namespace NoteVault.BLL.DTOs.Notes
 {
     public class NoteResponseDto
     {
