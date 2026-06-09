@@ -22,6 +22,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers(); // extention
+app.MapApplicationEndpoints();
 
 app.Run();
