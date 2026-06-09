@@ -15,8 +15,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); // extention
-    app.UseSwaggerUI(); // extention
+    app.UseSwaggerDocumentation();
 }
 
 app.UseHttpsRedirection();
