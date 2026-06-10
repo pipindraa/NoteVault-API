@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using NoteVault.DAL.Data;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
