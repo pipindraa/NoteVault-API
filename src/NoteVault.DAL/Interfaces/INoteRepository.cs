@@ -1,6 +1,6 @@
 ﻿using NoteVault.DAL.Entities;
 
-namespace NoteVault.DAL.Repositories
+namespace NoteVault.DAL.Interfaces
 {
     public interface INoteRepository
     {

@@ -1,7 +1,7 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
-using NoteVault.DAL.Repositories;
+using NoteVault.DAL.Interfaces;
 
 namespace NoteVault.BLL.Services
 {
