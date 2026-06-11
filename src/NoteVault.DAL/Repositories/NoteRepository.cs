@@ -22,7 +22,7 @@ namespace NoteVault.DAL.Repositories
             bool descending = true,
             CancellationToken cancellationToken = default)
         {
-            var query = _notes.AsNoTracking();
+            var query = _notes.Include(note => note.Tags).AsNoTracking();
 
             query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
 
@@ -32,6 +32,7 @@ namespace NoteVault.DAL.Repositories
         public async Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _notes
+                .Include(note => note.Tags)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(note => note.Id == id, cancellationToken);
         }
