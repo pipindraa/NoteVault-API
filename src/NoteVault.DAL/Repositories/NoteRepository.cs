@@ -60,18 +60,11 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var note =  await _context.Notes
-                .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+            var deletedCount = await _context.Notes
+                .Where(note => note.Id == id)
+                .ExecuteDeleteAsync(cancellationToken);
 
-            if (note is null)
-            {
-                return false;
-            }
-
-            _context.Notes.Remove(note);
-            await _context.SaveChangesAsync(cancellationToken); 
-            
-            return true;
+            return deletedCount > 0;
         }
     }
 }
