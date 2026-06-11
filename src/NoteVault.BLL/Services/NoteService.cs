@@ -3,6 +3,7 @@ using NoteVault.BLL.Exceptions;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
+using NoteVault.BLL.Constants;
 
 namespace NoteVault.BLL.Services
 {
@@ -26,7 +27,7 @@ namespace NoteVault.BLL.Services
             var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
             if (note is null)
-                throw new NotFoundException($"Note with id {id} was not found.");
+                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
             return MapToResponseDto(note);
         }
@@ -59,7 +60,7 @@ namespace NoteVault.BLL.Services
             var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
 
             if (updatedNote is null)
-                throw new NotFoundException($"Note with id {id} was not found.");
+                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
             return MapToResponseDto(updatedNote);
         }
@@ -68,7 +69,7 @@ namespace NoteVault.BLL.Services
         {
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
             if (!deleted)
-                throw new NotFoundException($"Note with id {id} was not found.");
+                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
         }
 
         private static NoteResponseDto MapToResponseDto(Note note)
