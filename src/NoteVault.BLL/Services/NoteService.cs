@@ -1,7 +1,6 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Exceptions;
 using NoteVault.BLL.Interfaces;
-using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Constants;
 using NoteVault.BLL.Mappers;
@@ -19,7 +18,7 @@ namespace NoteVault.BLL.Services
 
         public async Task<IReadOnlyCollection<NoteResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var notes = await _noteRepository.GetAllAsync(cancellationToken);
+            var notes = await _noteRepository.GetAllAsync(note => note.CreationDate, descending: true, cancellationToken);
             return notes.Select(note => note.ToResponseDto()).ToList();
         }
 

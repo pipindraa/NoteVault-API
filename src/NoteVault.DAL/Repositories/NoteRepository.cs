@@ -2,6 +2,7 @@
 using NoteVault.DAL.Data;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
+using System.Linq.Expressions;
 
 namespace NoteVault.DAL.Repositories
 {
@@ -14,12 +15,16 @@ namespace NoteVault.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<Note>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Note>> GetAllAsync(
+            Expression<Func<Note, object>> orderBy,
+            bool descending = true,
+            CancellationToken cancellationToken = default)
         {
-            return await _context.Notes
-                .AsNoTracking()
-                .OrderByDescending(note => note.CreationDate)
-                .ToListAsync(cancellationToken);
+            var query = _context.Notes.AsNoTracking();
+
+            query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+
+            return await query.ToListAsync(cancellationToken);
         }
 
         public async Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
