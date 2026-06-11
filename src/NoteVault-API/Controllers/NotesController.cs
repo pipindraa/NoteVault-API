@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
 using static NoteVault_API.Constants.ApiRoutes.Notes;
+using static NoteVault_API.Constants.ApiVersions;
 
 namespace NoteVault_API.Controllers
 {
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion(V1)]
     [Route(RoutePrefix)]
     public class NotesController : ControllerBase
     {
