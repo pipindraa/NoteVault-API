@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
+using static NoteVault_API.Constants.ApiRoutes.Notes;
 
 namespace NoteVault_API.Controllers
 {
@@ -10,9 +11,6 @@ namespace NoteVault_API.Controllers
     [Route(RoutePrefix)]
     public class NotesController : ControllerBase
     {
-        private const string RoutePrefix = "api/v{version:apiVersion}/notes";
-        private const string IdRoute = "{id:guid}";
-
         private readonly INoteService _noteService;
 
         public NotesController(INoteService noteService)
