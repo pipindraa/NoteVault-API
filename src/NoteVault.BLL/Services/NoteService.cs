@@ -4,6 +4,7 @@ using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Constants;
+using NoteVault.BLL.Mappers;
 
 namespace NoteVault.BLL.Services
 {
@@ -19,7 +20,7 @@ namespace NoteVault.BLL.Services
         public async Task<IReadOnlyCollection<NoteResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var notes = await _noteRepository.GetAllAsync(cancellationToken);
-            return notes.Select(MapToResponseDto).ToList();
+            return notes.Select(note => note.ToResponseDto()).ToList();
         }
 
         public async Task<NoteResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -29,40 +30,27 @@ namespace NoteVault.BLL.Services
             if (note is null)
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
-            return MapToResponseDto(note);
+            return note.ToResponseDto();
         }
 
         public async Task<NoteResponseDto> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
         {
-            var note = new Note
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Description = request.Description,
-                ImageUrls = request.ImageUrls,
-                CreationDate = DateTime.UtcNow
-            };
+            var note = request.ToEntity();
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
-            return MapToResponseDto(createdNote);
+            return createdNote.ToResponseDto();
         }
 
         public async Task<NoteResponseDto> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var note = new Note
-            {
-                Id = id,
-                Name = request.Name,
-                Description = request.Description,
-                ImageUrls = request.ImageUrls
-            };
+            var note = request.ToEntity(id);
 
             var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
 
             if (updatedNote is null)
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
-            return MapToResponseDto(updatedNote);
+            return updatedNote.ToResponseDto();
         }
         
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -70,18 +58,6 @@ namespace NoteVault.BLL.Services
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
             if (!deleted)
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
-        }
-
-        private static NoteResponseDto MapToResponseDto(Note note)
-        {
-            return new NoteResponseDto
-            {
-                Id = note.Id,
-                Name = note.Name,
-                Description = note.Description,
-                ImageUrls = note.ImageUrls,
-                CreationDate = note.CreationDate
-            };
         }
     }
 }
