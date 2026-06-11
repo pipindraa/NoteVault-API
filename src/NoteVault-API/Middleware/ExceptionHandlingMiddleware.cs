@@ -30,8 +30,11 @@ namespace NoteVault_API.Middleware
             }
             catch (Exception ex)
             {
-                var isKnownException = ExceptionStatusCodes.ContainsKey(ex.GetType());
-                var statusCode = ExceptionStatusCodes.GetValueOrDefault(ex.GetType());
+                var isKnownException = ExceptionStatusCodes.TryGetValue(ex.GetType(), out var statusCode);
+                if (!isKnownException)
+                {
+                    statusCode = HttpStatusCode.InternalServerError;
+                }
 
                 if (isKnownException)
                     _logger.LogWarning(ex, ex.Message);
