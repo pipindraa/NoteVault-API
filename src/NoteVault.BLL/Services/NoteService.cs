@@ -22,7 +22,7 @@ namespace NoteVault.BLL.Services
             return notes.Select(note => note.ToResponseDto()).ToList();
         }
 
-        public async Task<NoteResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<NoteResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
