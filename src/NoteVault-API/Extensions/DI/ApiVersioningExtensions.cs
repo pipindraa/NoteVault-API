@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using NoteVault_API.Constants;
 
 namespace NoteVault_API.Extensions.DI
 {
@@ -9,15 +10,15 @@ namespace NoteVault_API.Extensions.DI
             services
                 .AddApiVersioning(options =>
                 {
-                    options.DefaultApiVersion = new ApiVersion(1, 0);
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.ReportApiVersions = true;
+                    options.DefaultApiVersion = new ApiVersion(ApiVersions.MajorVersion, ApiVersions.MinorVersion);
+                    options.AssumeDefaultVersionWhenUnspecified = ApiVersions.AssumeDefaultVersion;
+                    options.ReportApiVersions = ApiVersions.ReportApiVersions;
                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 })
                 .AddApiExplorer(options =>
                 {
-                    options.GroupNameFormat = "'v'VVV";
-                    options.SubstituteApiVersionInUrl = true;
+                    options.GroupNameFormat = ApiVersions.GroupNameFormat;
+                    options.SubstituteApiVersionInUrl = ApiVersions.SubstiteApiVersionInUrl;
                 });
 
             return services;
