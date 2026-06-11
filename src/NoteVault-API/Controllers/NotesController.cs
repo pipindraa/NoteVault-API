@@ -37,7 +37,7 @@ namespace NoteVault_API.Controllers
         public async Task<ActionResult<NoteResponseDto>> Create([FromBody] NoteCreateDto request, CancellationToken cancellationToken)
         {
             var createdNote = await _noteService.CreateAsync(request, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id }, createdNote);
+            return BuildCreatedResponse(createdNote);
         }
 
         [HttpPut(IdRoute)]
@@ -53,5 +53,11 @@ namespace NoteVault_API.Controllers
             await _noteService.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
+
+        private CreatedAtActionResult BuildCreatedResponse(NoteResponseDto note)
+        {
+            return CreatedAtAction(nameof(GetById), new { id = note.Id }, note);
+        }
+
     }
 }
