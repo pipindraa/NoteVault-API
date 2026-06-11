@@ -9,10 +9,12 @@ namespace NoteVault.DAL.Repositories
     public class NoteRepository : INoteRepository
     {
         private readonly AppDbContext _context;
+        private readonly DbSet<Note> _notes;
 
-        public NoteRepository(AppDbContext context)
+        public NoteRepository(AppDbContext context, DbSet<Note> notes)
         {
             _context = context;
+            _notes = notes;
         }
 
         public async Task<List<Note>> GetAllAsync(
@@ -20,7 +22,7 @@ namespace NoteVault.DAL.Repositories
             bool descending = true,
             CancellationToken cancellationToken = default)
         {
-            var query = _context.Notes.AsNoTracking();
+            var query = _notes.AsNoTracking();
 
             query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
 
@@ -29,14 +31,14 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.Notes
+            return await _notes
                 .AsNoTracking()
                 .FirstOrDefaultAsync(note => note.Id == id, cancellationToken);
         }
 
         public async Task<Note> AddAsync(Note note, CancellationToken cancellationToken = default)
         {
-            await _context.Notes.AddAsync(note, cancellationToken);
+            await _notes.AddAsync(note, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return note;
@@ -44,7 +46,7 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default)
         {
-            var exists = await _context.Notes
+            var exists = await _notes
                 .AnyAsync(item => item.Id == note.Id, cancellationToken);
 
             if (!exists)
@@ -52,7 +54,7 @@ namespace NoteVault.DAL.Repositories
                 return null;
             }
 
-            _context.Notes.Update(note);
+            _notes.Update(note);
             await _context.SaveChangesAsync(cancellationToken); 
             
             return note;
@@ -60,7 +62,7 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var deletedCount = await _context.Notes
+            var deletedCount = await _notes
                 .Where(note => note.Id == id)
                 .ExecuteDeleteAsync(cancellationToken);
 
