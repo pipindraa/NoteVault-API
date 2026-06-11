@@ -30,7 +30,7 @@ namespace NoteVault_API.Controllers
         public async Task<ActionResult<NoteResponseDto>> GetById(Guid id, CancellationToken cancellationToken)
         {
             var note = await _noteService.GetByIdAsync(id, cancellationToken);
-            return note is null ? NotFound() : Ok(note);
+            return Ok(note);
         }
 
         [HttpPost]
@@ -44,14 +44,14 @@ namespace NoteVault_API.Controllers
         public async Task<ActionResult<NoteResponseDto>> Update(Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
         {
             var updatedNote = await _noteService.UpdateAsync(id, request, cancellationToken);
-            return updatedNote is null ? NotFound() : Ok(updatedNote);
+            return Ok(updatedNote);
         }
 
         [HttpDelete(IdRoute)]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            var deleted = await _noteService.DeleteAsync(id, cancellationToken);
-            return deleted ? NoContent() : NotFound();
+            await _noteService.DeleteAsync(id, cancellationToken);
+            return NoContent();
         }
     }
 }

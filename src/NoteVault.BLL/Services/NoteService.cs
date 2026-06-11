@@ -1,4 +1,5 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
+using NoteVault.BLL.Exceptions;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
@@ -23,7 +24,11 @@ namespace NoteVault.BLL.Services
         public async Task<NoteResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
-            return note is null ? null : MapToResponseDto(note);
+
+            if (note is null)
+                throw new NotFoundException($"Note with id {id} was not found.");
+
+            return MapToResponseDto(note);
         }
 
         public async Task<NoteResponseDto> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
@@ -41,7 +46,7 @@ namespace NoteVault.BLL.Services
             return MapToResponseDto(createdNote);
         }
 
-        public async Task<NoteResponseDto?> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
+        public async Task<NoteResponseDto> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
             var note = new Note
             {
@@ -52,14 +57,19 @@ namespace NoteVault.BLL.Services
             };
 
             var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
-            return updatedNote is null ? null : MapToResponseDto(updatedNote);
+
+            if (updatedNote is null)
+                throw new NotFoundException($"Note with id {id} was not found.");
+
+            return MapToResponseDto(updatedNote);
         }
         
-        public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return _noteRepository.DeleteAsync(id, cancellationToken);
+            var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
+            if (!deleted)
+                throw new NotFoundException($"Note with id {id} was not found.");
         }
-
 
         private static NoteResponseDto MapToResponseDto(Note note)
         {
