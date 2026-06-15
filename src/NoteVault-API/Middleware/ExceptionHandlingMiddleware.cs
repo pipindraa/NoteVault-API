@@ -37,10 +37,14 @@ namespace NoteVault_API.Middleware
                 }
 
                 if (isKnownException)
+                {
                     _logger.LogWarning(ex, ex.Message);
+                }
                 else
-                    _logger.LogError(ex, ErrorMessages.UnexpectedError);
-
+                {
+                    _logger.LogError(ex, "An unexpected error occurred.");
+                }
+                    
                 var message = isKnownException ? ex.Message : ErrorMessages.UnexpectedError;
                 await HandleExceptionAsync(context, statusCode, message);
             }
