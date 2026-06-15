@@ -28,7 +28,9 @@ namespace NoteVault.BLL.Services
             var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
             if (note is null)
+            {
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+            }
 
             return note.Adapt<NoteResponseDto>();
         }
@@ -51,7 +53,9 @@ namespace NoteVault.BLL.Services
             var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
 
             if (updatedNote is null)
+            {
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+            }
 
             return updatedNote.Adapt<NoteResponseDto>();
         }
@@ -60,7 +64,9 @@ namespace NoteVault.BLL.Services
         {
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
             if (!deleted)
+            {
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+            }
         }
     }
 }
