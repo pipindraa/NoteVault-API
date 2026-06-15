@@ -53,13 +53,11 @@ namespace NoteVault.DAL.Repositories
                 return null;
             }
 
-            existingNote.Name = note.Name;
-            existingNote.Description = note.Description;
-            existingNote.ImageUrls = note.ImageUrls;
+            _context.Entry(existingNote).CurrentValues.SetValues(note);
+            _context.Entry(existingNote).Property(n => n.CreationDate).IsModified = false;
 
-            _context.Tags.RemoveRange(existingNote.Tags);
-
-            existingNote.Tags = note.Tags;
+            existingNote.Tags.Clear();
+            existingNote.Tags.AddRange(note.Tags);
 
             await _context.SaveChangesAsync(cancellationToken);
             return existingNote;
