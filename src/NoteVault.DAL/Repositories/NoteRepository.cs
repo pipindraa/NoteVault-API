@@ -69,7 +69,7 @@ namespace NoteVault.DAL.Repositories
                 .Where(note => note.Id == id)
                 .ExecuteDeleteAsync(cancellationToken);
 
-            return deletedCount > 0;
+            return deletedCount != default;
         }
     }
 }
