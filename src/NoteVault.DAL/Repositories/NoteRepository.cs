@@ -11,10 +11,10 @@ namespace NoteVault.DAL.Repositories
         private readonly AppDbContext _context;
         private readonly DbSet<Note> _notes;
 
-        public NoteRepository(AppDbContext context, DbSet<Note> notes)
+        public NoteRepository(AppDbContext context)
         {
             _context = context;
-            _notes = notes;
+            _notes = context.Notes;
         }
 
         public async Task<List<Note>> GetAllAsync(
