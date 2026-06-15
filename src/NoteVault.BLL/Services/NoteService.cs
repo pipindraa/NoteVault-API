@@ -1,5 +1,4 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
-using NoteVault.BLL.Exceptions;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Constants;

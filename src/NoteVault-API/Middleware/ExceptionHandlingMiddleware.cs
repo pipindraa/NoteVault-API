@@ -1,5 +1,4 @@
-﻿using NoteVault.BLL.Exceptions;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using NoteVault_API.Models;
 using NoteVault_API.Constants;
@@ -8,10 +7,7 @@ namespace NoteVault_API.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
-        private static readonly Dictionary<Type, HttpStatusCode> ExceptionStatusCodes = new()
-        {
-            { typeof(NotFoundException), HttpStatusCode.NotFound  },
-        };
+        private static readonly Dictionary<Type, HttpStatusCode> ExceptionStatusCodes = new();
 
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
