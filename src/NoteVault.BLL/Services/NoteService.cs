@@ -3,7 +3,8 @@ using NoteVault.BLL.Exceptions;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Constants;
-using NoteVault.BLL.Mappers;
+using NoteVault.DAL.Entities;
+using Mapster;
 
 namespace NoteVault.BLL.Services
 {
@@ -19,7 +20,7 @@ namespace NoteVault.BLL.Services
         public async Task<IReadOnlyCollection<NoteResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var notes = await _noteRepository.GetAllAsync(note => note.CreationDate, descending: true, cancellationToken);
-            return notes.Select(note => note.ToResponseDto()).ToList();
+            return notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
         }
 
         public async Task<NoteResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -29,27 +30,30 @@ namespace NoteVault.BLL.Services
             if (note is null)
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
-            return note.ToResponseDto();
+            return note.Adapt<NoteResponseDto>();
         }
 
         public async Task<NoteResponseDto> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
         {
-            var note = request.ToEntity();
+            var note = request.Adapt<Note>();
+            note.Id = Guid.NewGuid();
+            note.CreationDate = DateTime.UtcNow;
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
-            return createdNote.ToResponseDto();
+            return createdNote.Adapt<NoteResponseDto>();
         }
 
         public async Task<NoteResponseDto> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var note = request.ToEntity(id);
+            var note = request.Adapt<Note>();
+            note.Id = id;
 
             var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
 
             if (updatedNote is null)
                 throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
 
-            return updatedNote.ToResponseDto();
+            return updatedNote.Adapt<NoteResponseDto>();
         }
         
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
