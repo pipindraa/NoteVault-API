@@ -22,42 +22,54 @@ namespace NoteVault_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyCollection<NoteResponseDto>>> GetAll(CancellationToken cancellationToken)
         {
-            var notes = await _noteService.GetAllAsync(cancellationToken);
-            return Ok(notes);
+            var result = await _noteService.GetAllAsync(cancellationToken);
+            return Ok(result.Value);
         }
 
         [HttpGet(IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> GetById(Guid id, CancellationToken cancellationToken)
         {
-            var note = await _noteService.GetByIdAsync(id, cancellationToken);
-            return Ok(note);
+            var result = await _noteService.GetByIdAsync(id, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return NotFound(new { error = result.ErrorMessage });
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpPost]
         public async Task<ActionResult<NoteResponseDto>> Create([FromBody] NoteCreateDto request, CancellationToken cancellationToken)
         {
-            var createdNote = await _noteService.CreateAsync(request, cancellationToken);
-            return BuildCreatedResponse(createdNote);
+            var result = await _noteService.CreateAsync(request, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
         }
 
         [HttpPut(IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> Update(Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
         {
-            var updatedNote = await _noteService.UpdateAsync(id, request, cancellationToken);
-            return Ok(updatedNote);
+            var result = await _noteService.UpdateAsync(id, request, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return NotFound(new { error = result.ErrorMessage });
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpDelete(IdRoute)]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _noteService.DeleteAsync(id, cancellationToken);
+            var result = await _noteService.DeleteAsync(id, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return NotFound(new { error = result.ErrorMessage });
+            }
+
             return NoContent();
         }
-
-        private CreatedAtActionResult BuildCreatedResponse(NoteResponseDto note)
-        {
-            return CreatedAtAction(nameof(GetById), new { id = note.Id }, note);
-        }
-
     }
 }

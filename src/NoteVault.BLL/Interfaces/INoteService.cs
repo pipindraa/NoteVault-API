@@ -1,13 +1,14 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
+using NoteVault.BLL.Common;
 
 namespace NoteVault.BLL.Interfaces
 {
     public interface INoteService
     {
-        Task<IReadOnlyCollection<NoteResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task<NoteResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<NoteResponseDto> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default);
-        Task<NoteResponseDto> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<Result<NoteResponseDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default);
+        Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default);
+        Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

@@ -4,6 +4,7 @@ using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Constants;
 using NoteVault.DAL.Entities;
+using NoteVault.BLL.Common;
 using Mapster;
 
 namespace NoteVault.BLL.Services
@@ -17,35 +18,38 @@ namespace NoteVault.BLL.Services
             _noteRepository = noteRepository;
         }
 
-        public async Task<IReadOnlyCollection<NoteResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var notes = await _noteRepository.GetAllAsync(note => note.CreationDate, descending: true, cancellationToken);
-            return notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
+            var dtos = notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
+            return Result<IReadOnlyCollection<NoteResponseDto>>.Success(dtos);
         }
 
-        public async Task<NoteResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
             if (note is null)
             {
-                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+                return Result<NoteResponseDto>.Failure(string.Format(NoteErrorMessages.NotFoundTemplate, id));
             }
 
-            return note.Adapt<NoteResponseDto>();
+            var dto = note.Adapt<NoteResponseDto>();
+            return Result<NoteResponseDto>.Success(dto);
         }
 
-        public async Task<NoteResponseDto> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
         {
             var note = request.Adapt<Note>();
             note.Id = Guid.NewGuid();
             note.CreationDate = DateTime.UtcNow;
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
-            return createdNote.Adapt<NoteResponseDto>();
+            var dto = createdNote.Adapt<NoteResponseDto>(); 
+            return Result<NoteResponseDto>.Success(dto);
         }
 
-        public async Task<NoteResponseDto> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
             var note = request.Adapt<Note>();
             note.Id = id;
@@ -54,19 +58,22 @@ namespace NoteVault.BLL.Services
 
             if (updatedNote is null)
             {
-                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+                return Result<NoteResponseDto>.Failure(string.Format(NoteErrorMessages.NotFoundTemplate, id));
             }
 
-            return updatedNote.Adapt<NoteResponseDto>();
+            var dto = updatedNote.Adapt<NoteResponseDto>();
+            return Result<NoteResponseDto>.Success(dto);
         }
         
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
             if (!deleted)
             {
-                throw new NotFoundException(string.Format(NoteErrorMessages.NotFoundTemplate, id));
+                return Result.Failure(string.Format(NoteErrorMessages.NotFoundTemplate, id));
             }
+
+            return Result.Success();
         }
     }
 }
