@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
 using NoteVault_API.Models;
-using static NoteVault_API.Constants.ApiRoutes.Notes;
-using static NoteVault_API.Constants.ApiVersions;
+using NoteVault_API.Constants;
 
 namespace NoteVault_API.Controllers
 {
     [ApiController]
-    [ApiVersion(V1)]
-    [Route(RoutePrefix)]
+    [ApiVersion(ApiVersions.V1)]
+    [Route(ApiRoutes.Notes.RoutePrefix)]
     public class NotesController : ControllerBase
     {
         private readonly INoteService _noteService;
@@ -37,7 +36,7 @@ namespace NoteVault_API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet(IdRoute)]
+        [HttpGet(ApiRoutes.Notes.IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await _noteService.GetByIdAsync(id, cancellationToken);
@@ -71,7 +70,7 @@ namespace NoteVault_API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
         }
 
-        [HttpPut(IdRoute)]
+        [HttpPut(ApiRoutes.Notes.IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> Update([FromRoute] Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
         {
             var result = await _noteService.UpdateAsync(id, request, cancellationToken);
@@ -88,7 +87,7 @@ namespace NoteVault_API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpDelete(IdRoute)]
+        [HttpDelete(ApiRoutes.Notes.IdRoute)]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await _noteService.DeleteAsync(id, cancellationToken);
