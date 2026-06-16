@@ -54,6 +54,7 @@ namespace NoteVault.DAL.Repositories
             _notes.Update(note);
             _context.Entry(note).Property(n => n.CreationDate).IsModified = false;
 
+            await _context.SaveChangesAsync(cancellationToken);
             return note;
         }
 
