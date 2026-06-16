@@ -38,7 +38,7 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpGet(IdRoute)]
-        public async Task<ActionResult<NoteResponseDto>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<NoteResponseDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await _noteService.GetByIdAsync(id, cancellationToken);
 
@@ -72,7 +72,7 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpPut(IdRoute)]
-        public async Task<ActionResult<NoteResponseDto>> Update(Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
+        public async Task<ActionResult<NoteResponseDto>> Update([FromRoute] Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
         {
             var result = await _noteService.UpdateAsync(id, request, cancellationToken);
 
@@ -89,7 +89,7 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpDelete(IdRoute)]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await _noteService.DeleteAsync(id, cancellationToken);
 
