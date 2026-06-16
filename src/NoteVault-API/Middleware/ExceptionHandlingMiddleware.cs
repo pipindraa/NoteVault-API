@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text.Json;
 using NoteVault_API.Models;
 using NoteVault_API.Constants;
 
@@ -54,11 +53,8 @@ namespace NoteVault_API.Middleware
                 Message = message
             };
 
-            context.Response.ContentType = ContentTypes.Json;
             context.Response.StatusCode = (int)statusCode;
-
-            var json = JsonSerializer.Serialize(response);
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsJsonAsync(response);
         }
     }
 }
