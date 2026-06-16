@@ -25,23 +25,16 @@ namespace NoteVault_API.Middleware
             }
             catch (Exception ex)
             {
-                var isKnownException = ExceptionStatusCodes.TryGetValue(ex.GetType(), out var statusCode);
-                if (!isKnownException)
-                {
-                    statusCode = HttpStatusCode.InternalServerError;
-                }
-
-                if (isKnownException)
+                if (ExceptionStatusCodes.TryGetValue(ex.GetType(), out var statusCode))
                 {
                     _logger.LogWarning(ex, ex.Message);
+                    await HandleExceptionAsync(context, statusCode, ex.Message);
                 }
                 else
                 {
-                    _logger.LogError(ex, "An unexpected error occurred.");
+                    _logger.LogError(ex, ErrorMessages.UnexpectedError);
+                    await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ErrorMessages.UnexpectedError);
                 }
-                    
-                var message = isKnownException ? ex.Message : ErrorMessages.UnexpectedError;
-                await HandleExceptionAsync(context, statusCode, message);
             }
         }
 
