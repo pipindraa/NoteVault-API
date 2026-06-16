@@ -6,8 +6,6 @@ namespace NoteVault_API.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
-        private static readonly Dictionary<Type, HttpStatusCode> ExceptionStatusCodes = new();
-
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
@@ -25,16 +23,19 @@ namespace NoteVault_API.Middleware
             }
             catch (Exception ex)
             {
-                if (ExceptionStatusCodes.TryGetValue(ex.GetType(), out var statusCode))
+                var (statusCode, message) = ex switch
                 {
-                    _logger.LogWarning(ex, ex.Message);
-                    await HandleExceptionAsync(context, statusCode, ex.Message);
+                    _ => (HttpStatusCode.InternalServerError, ErrorMessages.UnexpectedError)
+                };
+                if (statusCode == HttpStatusCode.InternalServerError)
+                {
+                    _logger.LogError(ex, ErrorMessages.UnexpectedError);
                 }
                 else
                 {
-                    _logger.LogError(ex, ErrorMessages.UnexpectedError);
-                    await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ErrorMessages.UnexpectedError);
+                    _logger.LogWarning(ex, ex.Message);
                 }
+                await HandleExceptionAsync(context, statusCode, message);
             }
         }
 
