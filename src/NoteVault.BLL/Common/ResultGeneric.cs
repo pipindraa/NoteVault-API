@@ -4,9 +4,18 @@
     {
         private readonly T? _value;
 
-        public T Value => IsSuccess
-            ? _value!
-            : throw new InvalidOperationException("Cannot access the value of a failed result.");
+        public T Value
+        {
+            get
+            {
+                if (IsSuccess)
+                {
+                    return _value!;
+                }
+
+                throw new InvalidOperationException("Cannot access the value of a failed result.");
+            }
+        }
 
         private Result(T? value, bool isSuccess, string? errorMessage) : base(isSuccess, errorMessage)
         {

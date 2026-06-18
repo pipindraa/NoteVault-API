@@ -23,7 +23,16 @@ namespace NoteVault.DAL.Repositories
             CancellationToken cancellationToken = default)
         {
             var query = _notes.Include(note => note.Tags).AsNoTracking();
-            query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+
+            if (descending)
+            {
+                query = query.OrderByDescending(orderBy);
+            }
+            else
+            {
+                query = query.OrderBy(orderBy);
+            }
+
             return await query.ToListAsync(cancellationToken);
         }
 
