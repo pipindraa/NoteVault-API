@@ -17,12 +17,13 @@
             }
         }
 
-        private Result(T? value, bool isSuccess, string? errorMessage) : base(isSuccess, errorMessage)
+        private Result(T? value, bool isSuccess, IReadOnlyCollection<string> errors) : base(isSuccess, errors)
         {
             _value = value;
         }
 
-        public static Result<T> Success(T value) => new(value, true, null);
-        public static new Result<T> Failure(string errorMessage) => new(default, false, errorMessage);
+        public static Result<T> Success(T value) => new(value, true, Array.Empty<string>());
+        public static new Result<T> Failure(string errorMessage) => new(default, false, new[] { errorMessage });
+        public static new Result<T> Failure(IReadOnlyCollection<string> errors) => new(default, false, errors);
     }
 }

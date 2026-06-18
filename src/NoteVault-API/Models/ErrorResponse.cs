@@ -4,5 +4,6 @@
     {
         public int StatusCode { get; set; }
         public string Message { get; set; } = string.Empty;
+        public IReadOnlyCollection<string> Errors { get; set; } = Array.Empty<string>();
     }
 }

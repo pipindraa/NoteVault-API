@@ -29,7 +29,8 @@ namespace NoteVault_API.Controllers
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = result.ErrorMessage ?? string.Empty
+                    Message = result.ErrorMessage ?? string.Empty,
+                    Errors = result.Errors
                 });
             }
 
@@ -46,7 +47,8 @@ namespace NoteVault_API.Controllers
                 return NotFound(new ErrorResponse 
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = result.ErrorMessage ?? string.Empty
+                    Message = result.ErrorMessage ?? string.Empty,
+                    Errors = result.Errors
                 });
             }
 
@@ -63,7 +65,8 @@ namespace NoteVault_API.Controllers
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = result.ErrorMessage ?? string.Empty
+                    Message = result.ErrorMessage ?? string.Empty,
+                    Errors = result.Errors
                 });
             }
 
@@ -80,7 +83,8 @@ namespace NoteVault_API.Controllers
                 return NotFound(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = result.ErrorMessage ?? string.Empty
+                    Message = result.ErrorMessage ?? string.Empty,
+                    Errors = result.Errors
                 });
             }
 
@@ -97,7 +101,8 @@ namespace NoteVault_API.Controllers
                 return NotFound(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = result.ErrorMessage ?? string.Empty
+                    Message = result.ErrorMessage ?? string.Empty,
+                    Errors = result.Errors
                 });
             }
 
