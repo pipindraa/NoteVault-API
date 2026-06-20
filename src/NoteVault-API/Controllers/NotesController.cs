@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
@@ -30,7 +31,7 @@ namespace NoteVault_API.Controllers
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = result.ErrorMessage ?? string.Empty,
-                    Errors = result.Errors
+                    Errors = result.Errors.Select(e => e.Message).ToList()
                 });
             }
 
@@ -48,7 +49,7 @@ namespace NoteVault_API.Controllers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = result.ErrorMessage ?? string.Empty,
-                    Errors = result.Errors
+                    Errors = result.Errors.Select(e => e.Message).ToList()
                 });
             }
 
@@ -66,7 +67,7 @@ namespace NoteVault_API.Controllers
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = result.ErrorMessage ?? string.Empty,
-                    Errors = result.Errors
+                    Errors = result.Errors.Select(e => e.Message).ToList()
                 });
             }
 
@@ -84,7 +85,7 @@ namespace NoteVault_API.Controllers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = result.ErrorMessage ?? string.Empty,
-                    Errors = result.Errors
+                    Errors = result.Errors.Select(e => e.Message).ToList()  
                 });
             }
 
@@ -102,7 +103,7 @@ namespace NoteVault_API.Controllers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = result.ErrorMessage ?? string.Empty,
-                    Errors = result.Errors
+                    Errors = result.Errors.Select(e => e.Message).ToList()
                 });
             }
 

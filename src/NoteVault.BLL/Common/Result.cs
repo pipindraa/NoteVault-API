@@ -5,22 +5,22 @@ namespace NoteVault.BLL.Common
 {
     public class Result
     {
-        private static readonly Result _success = new(true, Array.Empty<string>());
+        private static readonly Result _success = new(true, Array.Empty<Error>());
 
         public bool IsSuccess { get; }
         public bool IsFailure => !IsSuccess;
-        public IReadOnlyCollection<string> Errors { get; }
+        public IReadOnlyCollection<Error> Errors { get; }
 
-        public string? ErrorMessage => Errors.FirstOrDefault();
+        public string? ErrorMessage => Errors.FirstOrDefault()?.Message;
 
-        protected Result(bool isSuccess, IReadOnlyCollection<string> errors)
+        protected Result(bool isSuccess, IReadOnlyCollection<Error> errors)
         {
             IsSuccess = isSuccess;
             Errors = errors;
         }
 
         public static Result Success() => _success;
-        public static Result Failure(string errorMessage) => new(false, new[] {errorMessage});
-        public static Result Failure(IReadOnlyCollection<string> errors) => new(false, errors);
+        public static Result Failure(Error error) => new(false, new[] {error});
+        public static Result Failure(IReadOnlyCollection<Error> errors) => new(false, errors);
     }
 }
