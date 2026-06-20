@@ -23,7 +23,7 @@
         }
 
         public static Result<T> Success(T value) => new(value, true, Array.Empty<string>());
-        public static new Result<T> Failure(string errorMessage) => new(default, false, new[] { errorMessage });
-        public static new Result<T> Failure(IReadOnlyCollection<string> errors) => new(default, false, errors);
+        public static Result<T> Failure(string errorMessage) => new(default, false, new[] { errorMessage });
+        public static Result<T> Failure(IReadOnlyCollection<string> errors) => new(default, false, errors);
     }
 }
