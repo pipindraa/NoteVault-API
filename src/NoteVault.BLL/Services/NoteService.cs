@@ -30,8 +30,7 @@ namespace NoteVault.BLL.Services
 
             if (note is null)
             {
-                var error = new Error(NoteErrorCodes.NotFound, string.Format(NoteErrorMessages.NotFoundTemplate, id));
-                return Result<NoteResponseDto>.Failure(error);
+                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
 
             var dto = note.Adapt<NoteResponseDto>();
@@ -58,8 +57,7 @@ namespace NoteVault.BLL.Services
 
             if (updatedNote is null)
             {
-                var error = new Error(NoteErrorCodes.NotFound, string.Format(NoteErrorMessages.NotFoundTemplate, id));
-                return Result<NoteResponseDto>.Failure(error);
+                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
 
             var dto = updatedNote.Adapt<NoteResponseDto>();
@@ -71,8 +69,7 @@ namespace NoteVault.BLL.Services
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
             if (!deleted)
             {
-                var error = new Error(NoteErrorCodes.NotFound, string.Format(NoteErrorMessages.NotFoundTemplate, id));
-                return Result.Failure(error);
+                return Result.Failure(ErrorCode.NotFound);
             }
 
             return Result.Success();

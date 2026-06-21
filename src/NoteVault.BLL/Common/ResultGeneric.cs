@@ -12,18 +12,18 @@
             }
         }
 
-        private Result(T? value, bool isSuccess, IReadOnlyCollection<Error> errors) : base(isSuccess, errors)
+        private Result(T? value, bool isSuccess, IReadOnlyCollection<ErrorCode> errors) : base(isSuccess, errors)
         {
             _value = value;
         }
 
-        private Result(bool isSuccess, IReadOnlyCollection<Error> errors) : base(isSuccess, errors)
+        private Result(bool isSuccess, IReadOnlyCollection<ErrorCode> errors) : base(isSuccess, errors)
         {
             _value = default;
         }
 
-        public static Result<T> Success(T value) => new(value, true, Array.Empty<Error>());
-        public static Result<T> Failure(Error error) => new(false, new[] { error });
-        public static Result<T> Failure(IReadOnlyCollection<Error> errors) => new(false, errors);
+        public static Result<T> Success(T value) => new(value, true, Array.Empty<ErrorCode>());
+        public static Result<T> Failure(ErrorCode error) => new(false, new[] { error });
+        public static Result<T> Failure(IReadOnlyCollection<ErrorCode> errors) => new(false, errors);
     }
 }
