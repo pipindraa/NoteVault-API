@@ -10,8 +10,6 @@ namespace NoteVault.BLL.Common
         public bool IsFailure => !IsSuccess;
         public IReadOnlyCollection<ErrorCode> Errors { get; }
 
-        public string? ErrorMessage => Errors.FirstOrDefault()?.Message;
-
         protected Result(bool isSuccess, IReadOnlyCollection<ErrorCode> errors)
         {
             IsSuccess = isSuccess;
