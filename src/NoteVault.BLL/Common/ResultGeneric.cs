@@ -8,12 +8,7 @@
         {
             get
             {
-                if (IsSuccess)
-                {
-                    return _value!;
-                }
-
-                throw new InvalidOperationException("Cannot access the value of a failed result.");
+                return _value!;
             }
         }
 
