@@ -53,15 +53,14 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default)
         {
-            var exists = await _notes.AnyAsync(item =>  item.Id == note.Id, cancellationToken);
+            var existingNote = await _notes.FindAsync(new object[] { note.Id });
 
-            if (!exists)
+            if (existingNote is null)
             {
                 return null;
             }
 
-            _notes.Update(note);
-            _context.Entry(note).Property(n => n.CreationDate).IsModified = false;
+            _context.Entry(existingNote).CurrentValues.SetValues(note);
 
             await _context.SaveChangesAsync(cancellationToken);
             return note;
