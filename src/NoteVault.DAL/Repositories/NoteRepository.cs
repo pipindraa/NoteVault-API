@@ -17,8 +17,8 @@ namespace NoteVault.DAL.Repositories
             _notes = context.Notes;
         }
 
-        public async Task<List<Note>> GetAllAsync(
-            Expression<Func<Note, object>> orderBy,
+        public async Task<List<Note>> GetAllAsync<TKey>(
+            Expression<Func<Note, TKey>> orderBy,
             bool descending = true,
             CancellationToken cancellationToken = default)
         {

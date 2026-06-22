@@ -5,7 +5,7 @@ namespace NoteVault.DAL.Interfaces
 {
     public interface INoteRepository
     {
-        Task<List<Note>> GetAllAsync(Expression<Func<Note, object>> orderBy, bool descending = true, CancellationToken cancellationToken = default);
+        Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, bool descending = true, CancellationToken cancellationToken = default);
         Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Note> AddAsync(Note note, CancellationToken cancellationToken = default);
         Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default);

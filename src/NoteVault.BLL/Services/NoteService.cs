@@ -1,7 +1,6 @@
 ﻿using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Interfaces;
-using NoteVault.BLL.Constants;
 using NoteVault.DAL.Entities;
 using NoteVault.BLL.Common;
 using Mapster;
