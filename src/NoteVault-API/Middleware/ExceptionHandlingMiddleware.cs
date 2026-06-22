@@ -43,8 +43,7 @@ namespace NoteVault_API.Middleware
         {
             var response = new ErrorResponse
             {
-                StatusCode = (int)statusCode,
-                Message = message
+                StatusCode = (int)statusCode
             };
 
             context.Response.StatusCode = (int)statusCode;
