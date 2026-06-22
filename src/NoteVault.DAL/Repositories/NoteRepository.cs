@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NoteVault.DAL.Data;
 using NoteVault.DAL.Entities;
+using NoteVault.DAL.Extensions;
 using NoteVault.DAL.Interfaces;
 using System.Linq.Expressions;
 
@@ -17,10 +18,7 @@ namespace NoteVault.DAL.Repositories
             _notes = context.Notes;
         }
 
-        public async Task<List<Note>> GetAllAsync<TKey>(
-            Expression<Func<Note, TKey>> orderBy,
-            bool descending = true,
-            CancellationToken cancellationToken = default)
+        public async Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default)
         {
             var query = _notes.Include(note => note.Tags).AsNoTracking();
 
@@ -33,7 +31,7 @@ namespace NoteVault.DAL.Repositories
                 query = query.OrderBy(orderBy);
             }
 
-            return await query.ToListAsync(cancellationToken);
+            return await query.ToPagedListAsync(pageNumber, pageSize, cancellationToken);
         }
 
         public async Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

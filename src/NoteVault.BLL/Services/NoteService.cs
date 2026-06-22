@@ -4,6 +4,7 @@ using NoteVault.DAL.Interfaces;
 using NoteVault.DAL.Entities;
 using NoteVault.BLL.Common;
 using Mapster;
+using NoteVault.BLL.DTOs.Pagination;
 
 namespace NoteVault.BLL.Services
 {
@@ -16,9 +17,15 @@ namespace NoteVault.BLL.Services
             _noteRepository = noteRepository;
         }
 
-        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var notes = await _noteRepository.GetAllAsync(note => note.CreationDate, descending: true, cancellationToken);
+            var notes = await _noteRepository.GetAllAsync(
+                note => note.CreationDate,
+                request.PageNumber,
+                request.PageSize,
+                descending: true, 
+                cancellationToken);
+
             var dtos = notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
             return Result<IReadOnlyCollection<NoteResponseDto>>.Success(dtos);
         }
