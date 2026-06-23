@@ -51,9 +51,7 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default)
         {
-            _notes.Attach(note);
-
-            _context.Entry(note).State = EntityState.Modified;
+            var entry = _notes.Update(note);
             _context.Entry(note).Property(n => n.CreationDate).IsModified = false;
 
             try
