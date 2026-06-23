@@ -49,7 +49,7 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpDelete(ApiRoutes.Notes.IdRoute)]
-        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var result = await _noteService.DeleteAsync(id, cancellationToken);
             return result.ToActionResult(this);
