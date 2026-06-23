@@ -22,8 +22,18 @@
             _value = default;
         }
 
-        public static Result<T> Success(T value) => new(value, true, Array.Empty<ErrorCode>());
-        public static Result<T> Failure(ErrorCode error) => new(false, new[] { error });
-        public static Result<T> Failure(IReadOnlyCollection<ErrorCode> errors) => new(false, errors);
+        public static Result<T> Success(T value)
+        {
+            return new Result<T>(value, true, Array.Empty<ErrorCode>());
+        }
+        public static Result<T> Failure(ErrorCode error)
+        {
+            return new Result<T> (false, new[] { error });
+        }
+            
+        public static Result<T> Failure(IReadOnlyCollection<ErrorCode> errors)
+        {
+            return new Result<T>(false, errors);
+        }
     }
 }
