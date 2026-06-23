@@ -27,14 +27,7 @@ namespace NoteVault_API.Middleware
                 {
                     _ => (HttpStatusCode.InternalServerError, ErrorMessages.UnexpectedError)
                 };
-                if (statusCode == HttpStatusCode.InternalServerError)
-                {
-                    _logger.LogError(ex, ErrorMessages.UnexpectedError);
-                }
-                else
-                {
-                    _logger.LogWarning(ex, ex.Message);
-                }
+
                 await HandleExceptionAsync(context, statusCode, message);
             }
         }
