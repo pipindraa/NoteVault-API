@@ -2,24 +2,16 @@
 {
     public class Result<T> : Result
     {
-        private readonly T? _value;
-
-        public T Value
-        {
-            get
-            {
-                return _value!;
-            }
-        }
+        public T Value { get;  }
 
         private Result(T? value, bool isSuccess, IReadOnlyCollection<ErrorCode> errors) : base(isSuccess, errors)
         {
-            _value = value;
+            Value = value;
         }
 
         private Result(bool isSuccess, IReadOnlyCollection<ErrorCode> errors) : base(isSuccess, errors)
         {
-            _value = default;
+            Value = default;
         }
 
         public static Result<T> Success(T value)
