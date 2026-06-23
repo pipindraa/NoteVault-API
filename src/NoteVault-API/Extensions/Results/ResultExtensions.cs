@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.Common;
 using NoteVault_API.Models;
-using System.Reflection.Metadata.Ecma335;
 
-namespace NoteVault_API.Extensions.DI
+namespace NoteVault_API.Extensions.Results
 {
     public static class ResultExtensions
     {

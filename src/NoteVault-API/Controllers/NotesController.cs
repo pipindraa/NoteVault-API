@@ -4,7 +4,7 @@ using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.DTOs.Pagination;
 using NoteVault.BLL.Interfaces;
 using NoteVault_API.Constants;
-using NoteVault_API.Extensions.DI;
+using NoteVault_API.Extensions.Results;
 
 namespace NoteVault_API.Controllers
 {
