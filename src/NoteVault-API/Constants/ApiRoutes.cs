@@ -1,11 +1,11 @@
 ﻿namespace NoteVault_API.Constants
 {
-    public static class ApiRoutes
+    internal static class ApiRoutes
     {
-        public static class Notes
+        internal static class Notes
         {
-            public const string RoutePrefix = "api/v{version:apiVersion}/notes";
-            public const string IdRoute = "{id:guid}";
+            internal const string RoutePrefix = "api/v{version:apiVersion}/notes";
+            internal const string IdRoute = "{id:guid}";
         }
     }
 }

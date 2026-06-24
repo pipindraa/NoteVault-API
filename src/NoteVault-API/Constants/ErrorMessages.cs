@@ -1,7 +1,7 @@
 ﻿namespace NoteVault_API.Constants
 {
-    public static class ErrorMessages
+    internal static class ErrorMessages
     {
-        public const string UnexpectedError = "An unexpected error occurred.";
+        internal const string UnexpectedError = "An unexpected error occurred.";
     }
 }

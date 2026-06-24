@@ -1,7 +1,7 @@
 ﻿namespace NoteVault.BLL.Constants
 {
-    public static class NoteErrorCodes
+    internal static class NoteErrorCodes
     {
-        public const string NotFound = "NOTE_NOT_FOUND";
+        internal const string NotFound = "NOTE_NOT_FOUND";
     }
 }
