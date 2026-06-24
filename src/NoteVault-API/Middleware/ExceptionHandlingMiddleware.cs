@@ -1,6 +1,6 @@
-﻿using System.Net;
-using NoteVault_API.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using NoteVault_API.Constants;
+using System.Net;
 
 namespace NoteVault_API.Middleware
 {
@@ -34,13 +34,15 @@ namespace NoteVault_API.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, string message)
         {
-            var response = new ErrorResponse
+            context.Response.StatusCode = (int)statusCode;
+
+            var problemDetails = new ProblemDetails
             {
-                StatusCode = (int)statusCode
+                Status = (int)statusCode,
+                Detail = message
             };
 
-            context.Response.StatusCode = (int)statusCode;
-            await context.Response.WriteAsJsonAsync(response);
+            await context.Response.WriteAsJsonAsync(problemDetails);
         }
     }
 }

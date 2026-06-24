@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.Common;
-using NoteVault_API.Models;
 
 namespace NoteVault_API.Extensions.Results
 {
@@ -28,20 +27,13 @@ namespace NoteVault_API.Extensions.Results
 
         private static ActionResult ToErrorActionResult(this Result result)
         {
-            var primaryError = result.Errors.FirstOrDefault();
-            int statusCode = GetHttpStatusCode(primaryError);
-
-            var errorResponse = new ErrorResponse
-            {
-                StatusCode = statusCode,
-                Errors = result.Errors.ToList()
-            };
+            var statusCode = GetHttpStatusCode(result.Errors.FirstOrDefault());
 
             return statusCode switch
             {
-                StatusCodes.Status404NotFound => new NotFoundObjectResult(errorResponse),
-                StatusCodes.Status400BadRequest => new BadRequestObjectResult(errorResponse),
-                _ => new OkObjectResult(errorResponse) { StatusCode = statusCode }
+                StatusCodes.Status404NotFound => new NotFoundObjectResult(result.Errors),
+                StatusCodes.Status400BadRequest => new BadRequestObjectResult(result.Errors),
+                _ => new StatusCodeResult(statusCode)
             };
         }
 
