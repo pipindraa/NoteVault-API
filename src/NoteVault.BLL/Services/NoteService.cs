@@ -5,6 +5,7 @@ using NoteVault.DAL.Entities;
 using NoteVault.BLL.Common;
 using Mapster;
 using NoteVault.BLL.DTOs.Pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace NoteVault.BLL.Services
 {
@@ -56,20 +57,25 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var existingNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
+            var note = new Note 
+            { 
+                Id = id, 
+                Name = request.Name,
+                Description = request.Description
+            };
 
-            if (existingNote is null)
+            try
+            {
+                await _noteRepository.UpdateAsync(note, cancellationToken);
+
+                var updatedNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
+                var dto = updatedNote!.Adapt<NoteResponseDto>();
+                return Result<NoteResponseDto>.Success(dto);
+            }
+            catch (DbUpdateConcurrencyException)
             {
                 return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
-
-            existingNote.Name = request.Name;
-            existingNote.Description = request.Description;
-
-            await _noteRepository.UpdateAsync(existingNote, cancellationToken);
-
-            var dto = existingNote.Adapt<NoteResponseDto>();
-            return Result<NoteResponseDto>.Success(dto);
         }
         
         public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
