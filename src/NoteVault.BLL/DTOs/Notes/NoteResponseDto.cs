@@ -7,8 +7,8 @@ namespace NoteVault.BLL.DTOs.Notes
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public List<string> ImageUrls { get; set; } = new();
+        public IReadOnlyCollection<string> ImageUrls { get; set; } = Array.Empty<string>();
         public DateTime CreationDate { get; set; }
-        public List<TagDto> Tags { get; set; } = new();
+        public IReadOnlyCollection<TagDto> Tags { get; set; } = Array.Empty<TagDto>();
     }
 }
