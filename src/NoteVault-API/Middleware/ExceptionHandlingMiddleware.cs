@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NoteVault_API.Constants;
 using System.Net;
 
 namespace NoteVault_API.Middleware
@@ -25,7 +24,7 @@ namespace NoteVault_API.Middleware
             {
                 var (statusCode, message) = ex switch
                 {
-                    _ => (HttpStatusCode.InternalServerError, ErrorMessages.UnexpectedError)
+                    _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred.")
                 };
 
                 await HandleExceptionAsync(context, statusCode, message);
