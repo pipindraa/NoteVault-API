@@ -49,20 +49,11 @@ namespace NoteVault.DAL.Repositories
             return note;
         }
 
-        public async Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(Note note, CancellationToken cancellationToken = default)
         {
-            var entry = _notes.Update(note);
+            _notes.Update(note);
             _context.Entry(note).Property(n => n.CreationDate).IsModified = false;
-
-            try
-            {
-                await _context.SaveChangesAsync(cancellationToken);
-                return note;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)

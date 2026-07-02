@@ -56,17 +56,19 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
+            var existingNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
-            if (note is null)
+            if (existingNote is null)
             {
                 return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
 
-            request.Adapt(note);
+            existingNote.Name = request.Name;
+            existingNote.Description = request.Description;
 
-            var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
-            var dto = updatedNote!.Adapt<NoteResponseDto>();
+            await _noteRepository.UpdateAsync(existingNote, cancellationToken);
+
+            var dto = existingNote.Adapt<NoteResponseDto>();
             return Result<NoteResponseDto>.Success(dto);
         }
         
