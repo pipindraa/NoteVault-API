@@ -22,6 +22,8 @@ namespace NoteVault_API.Middleware
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An unhandled exception occurred.");
+
                 var statusCode = HttpStatusCode.InternalServerError;
                 var message = "An unexpected error occurred.";
 
