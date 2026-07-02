@@ -22,10 +22,8 @@ namespace NoteVault_API.Middleware
             }
             catch (Exception ex)
             {
-                var (statusCode, message) = ex switch
-                {
-                    _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred.")
-                };
+                var statusCode = HttpStatusCode.InternalServerError;
+                var message = "An unexpected error occurred.";
 
                 await HandleExceptionAsync(context, statusCode, message);
             }
