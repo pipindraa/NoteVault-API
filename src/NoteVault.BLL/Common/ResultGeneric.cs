@@ -2,30 +2,20 @@
 {
     public class Result<T> : Result
     {
-        public T Value { get;  }
+        public T? Value { get;  }
 
-        private Result(T? value, bool isSuccess, IReadOnlyCollection<ErrorCode> errors, IEnumerable<string> errorMessages) : base(isSuccess, errors, errorMessages)
+        private Result(T? value, bool isSuccess, ErrorCode? error, string? errorMessage) : base(isSuccess, error, errorMessage)
         {
             Value = value;
         }
 
-        private Result(bool isSuccess, IReadOnlyCollection<ErrorCode> errors, IEnumerable<string> errorMessages) : base(isSuccess, errors,  errorMessages)
-        {
-            Value = default;
-        }
-
         public static Result<T> Success(T value)
         {
-            return new Result<T>(value, true, Array.Empty<ErrorCode>(), Enumerable.Empty<string>());
+            return new Result<T>(value, true, null, null);
         }
-        public static Result<T> Failure(ErrorCode error, IEnumerable<string>? messages = null)
+        public static Result<T> Failure(ErrorCode error, string? message = null)
         {
-            return new Result<T> (false, new[] { error }, messages ?? Enumerable.Empty<string>());
-        }
-            
-        public static Result<T> Failure(IReadOnlyCollection<ErrorCode> errors, IEnumerable<string>? messages = null)
-        {
-            return new Result<T>(false, errors, messages ?? Enumerable.Empty<string>());
+            return new Result<T> (default, false, error, message);
         }
     }
 }

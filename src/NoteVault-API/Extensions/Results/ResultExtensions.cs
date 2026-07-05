@@ -27,13 +27,11 @@ namespace NoteVault_API.Extensions.Results
 
         private static ActionResult ToErrorActionResult(this Result result)
         {
-            var errorCode = result.Errors.FirstOrDefault();
-
-            return errorCode switch
+            return result.Error switch
             {
-                ErrorCode.NotFound => new NotFoundObjectResult(result.Errors),
-                ErrorCode.ValidationError => new BadRequestObjectResult(result.Errors),
-                _ => new ObjectResult(result.Errors)
+                ErrorCode.NotFound => new NotFoundObjectResult(result.ErrorMessage),
+                ErrorCode.ValidationError => new BadRequestObjectResult(result.ErrorMessage),
+                _ => new BadRequestObjectResult(result.ErrorMessage ?? "An error occurred.")
             };
         }
     }
