@@ -27,11 +27,16 @@ namespace NoteVault_API.Extensions.Results
 
         private static ActionResult ToErrorActionResult(this Result result)
         {
+            var problem = new ProblemDetails
+            {
+                Detail = result.ErrorMessage ?? "An error occurred."
+            };
+
             return result.Error switch
             {
-                ErrorCode.NotFound => new NotFoundObjectResult(result.ErrorMessage),
-                ErrorCode.ValidationError => new BadRequestObjectResult(result.ErrorMessage),
-                _ => new BadRequestObjectResult(result.ErrorMessage ?? "An error occurred.")
+                ErrorCode.NotFound => new NotFoundObjectResult(problem),
+                ErrorCode.ValidationError => new BadRequestObjectResult(problem),
+                _ => new ObjectResult(problem) { StatusCode = StatusCodes.Status500InternalServerError}
             };
         }
     }
