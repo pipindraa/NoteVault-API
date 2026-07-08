@@ -64,18 +64,15 @@ namespace NoteVault.BLL.Services
                 Description = request.Description
             };
 
-            try
-            {
-                await _noteRepository.UpdateAsync(note, cancellationToken);
+            var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
 
-                var updatedNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
-                var dto = updatedNote!.Adapt<NoteResponseDto>();
-                return Result<NoteResponseDto>.Success(dto);
-            }
-            catch (DbUpdateConcurrencyException)
+            if (updatedNote is null)
             {
                 return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
+
+            var dto = updatedNote.Adapt<NoteResponseDto>();
+            return Result<NoteResponseDto>.Success(dto);
         }
         
         public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
