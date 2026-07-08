@@ -5,11 +5,11 @@ namespace NoteVault.BLL.DTOs.Notes
     public class NoteCreateDto
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
 
         [Required]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
 
-        public List<string> ImageUrls { get; set; } = new();
+        public IReadOnlyCollection<string> ImageUrls { get; init; } = Array.Empty<string>();
     }
 }
