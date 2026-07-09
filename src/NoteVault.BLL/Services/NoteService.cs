@@ -6,6 +6,7 @@ using NoteVault.BLL.Common;
 using Mapster;
 using NoteVault.BLL.DTOs.Pagination;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace NoteVault.BLL.Services
 {
@@ -57,24 +58,32 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var note = new Note 
-            { 
-                Id = id, 
+            var note = new Note
+            {
+                Id = id,
                 Name = request.Name,
                 Description = request.Description
             };
 
-            var updatedNote = await _noteRepository.UpdateAsync(note, cancellationToken);
-
-            if (updatedNote is null)
+            try
             {
-                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
-            }
+                await _noteRepository.UpdateAsync(note, cancellationToken);
 
-            var dto = updatedNote.Adapt<NoteResponseDto>();
-            return Result<NoteResponseDto>.Success(dto);
-        }
-        
+                var dto = note.Adapt<NoteResponseDto>();
+                return Result<NoteResponseDto>.Success(dto);
+            }
+            catch
+            {
+                var existingNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
+
+                if (existingNote is null)
+                {
+                    return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
+                }
+
+                return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
+            }
+        }        
         public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
