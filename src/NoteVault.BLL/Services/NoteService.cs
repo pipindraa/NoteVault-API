@@ -5,18 +5,19 @@ using NoteVault.DAL.Entities;
 using NoteVault.BLL.Common;
 using Mapster;
 using NoteVault.BLL.DTOs.Pagination;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
+using Microsoft.Extensions.Logging;
 
 namespace NoteVault.BLL.Services
 {
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly ILogger<NoteService> _logger;
 
-        public NoteService(INoteRepository noteRepository)
+        public NoteService(INoteRepository noteRepository, ILogger<NoteService> logger)
         {
             _noteRepository = noteRepository;
+            _logger = logger;
         }
 
         public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
@@ -72,7 +73,7 @@ namespace NoteVault.BLL.Services
                 var dto = note.Adapt<NoteResponseDto>();
                 return Result<NoteResponseDto>.Success(dto);
             }
-            catch
+            catch (Exception ex)
             {
                 var existingNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
 
@@ -80,6 +81,8 @@ namespace NoteVault.BLL.Services
                 {
                     return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
                 }
+
+                _logger.LogError(ex, "Failed to update note with id {NoteId}.", id);
 
                 return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
             }
