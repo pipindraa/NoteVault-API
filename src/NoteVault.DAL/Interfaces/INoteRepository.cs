@@ -8,7 +8,7 @@ namespace NoteVault.DAL.Interfaces
         Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default);
         Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Note> AddAsync(Note note, CancellationToken cancellationToken = default);
-        Task<Note?> UpdateAsync(Note note, CancellationToken cancellationToken = default);
+        Task UpdateAsync(Note note, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }
