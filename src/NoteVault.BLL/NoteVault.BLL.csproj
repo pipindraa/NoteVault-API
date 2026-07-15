@@ -11,9 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Constants\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
     <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="10.0.8" />
   </ItemGroup>
 
 </Project>

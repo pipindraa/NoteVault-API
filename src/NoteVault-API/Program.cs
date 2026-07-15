@@ -7,7 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddApplicationServices();
+builder.Services.AddApiVersioningSupport();
 builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();
@@ -18,10 +19,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocumentation();
 }
 
+app.UseGlobalExceptionHandling();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapApplicationEndpoints();
 
 app.Run();

@@ -1,7 +1,7 @@
 ﻿namespace NoteVault_API.Constants
 {
-    public static class ConnectionStrings
+    internal static class ConnectionStrings
     {
-        public const string DefaultConnection = "DefaultConnection";
+        internal const string DefaultConnection = "DefaultConnection";
     }
 }
