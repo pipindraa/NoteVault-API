@@ -19,6 +19,7 @@ namespace NoteVault_API.Extensions.DI
             services.AddScoped<ITokenService, TokenService>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
+            services.AddScoped<ITagRepository, TagRepository>();
 
             return services;
         }
