@@ -12,11 +12,13 @@ namespace NoteVault.BLL.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly ITagRepository _tagRepository;
         private readonly ILogger<NoteService> _logger;
 
-        public NoteService(INoteRepository noteRepository, ILogger<NoteService> logger)
+        public NoteService(INoteRepository noteRepository,ITagRepository tagRepository, ILogger<NoteService> logger)
         {
             _noteRepository = noteRepository;
+            _tagRepository = tagRepository;
             _logger = logger;
         }
 
@@ -52,6 +54,12 @@ namespace NoteVault.BLL.Services
             note.Id = Guid.NewGuid();
             note.CreationDate = DateTime.UtcNow;
 
+            if (request.TagIds.Any())
+            {
+                var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
+                note.Tags = tags;
+            }
+
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
             var dto = createdNote.Adapt<NoteResponseDto>(); 
             return Result<NoteResponseDto>.Success(dto);
@@ -65,6 +73,12 @@ namespace NoteVault.BLL.Services
                 Name = request.Name,
                 Description = request.Description
             };
+
+            if (request.TagIds.Any())
+            {
+                var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
+                note.Tags = tags;
+            }
 
             try
             {
