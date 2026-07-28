@@ -57,6 +57,12 @@ namespace NoteVault.BLL.Services
             if (request.TagIds.Any())
             {
                 var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
+
+                if (tags.Count != request.TagIds.Count)
+                {
+                    return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
+                }
+
                 note.Tags = tags;
             }
 
@@ -77,6 +83,12 @@ namespace NoteVault.BLL.Services
             if (request.TagIds.Any())
             {
                 var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
+
+                if (tags.Count != request.TagIds.Count)
+                {
+                    return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
+                }
+
                 note.Tags = tags;
             }
 
