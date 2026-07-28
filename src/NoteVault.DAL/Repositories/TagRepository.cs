@@ -30,6 +30,13 @@ namespace NoteVault.DAL.Repositories
                 .FirstOrDefaultAsync(tag => tag.Id == id, cancellationToken);
         }
 
+        public async Task<List<Tag>> GetByIdsAsync (IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await _tags
+                .Where(tag => ids.Contains(tag.Id))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<Tag> AddAsync(Tag tag, CancellationToken cancellationToken = default)
         {
             await _tags.AddAsync(tag, cancellationToken);
