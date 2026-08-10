@@ -18,7 +18,7 @@ namespace NoteVault.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "8.0.27")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,7 +36,7 @@ namespace NoteVault.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<List<string>>("ImageUrls")
+                    b.Property<List<string>>("ImageUrls")
                         .IsRequired()
                         .HasColumnType("text[]");
 
@@ -44,12 +44,7 @@ namespace NoteVault.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Notes");
                 });
@@ -74,40 +69,6 @@ namespace NoteVault.DAL.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("NoteVault.DAL.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("NoteVault.DAL.Entities.Note", b =>
-                {
-                    b.HasOne("NoteVault.DAL.Entities.User", "User")
-                        .WithMany("Notes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("NoteVault.DAL.Entities.Tag", b =>
                 {
                     b.HasOne("NoteVault.DAL.Entities.Note", null)
@@ -118,11 +79,6 @@ namespace NoteVault.DAL.Migrations
             modelBuilder.Entity("NoteVault.DAL.Entities.Note", b =>
                 {
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("NoteVault.DAL.Entities.User", b =>
-                {
-                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }
