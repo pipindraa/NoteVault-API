@@ -4,6 +4,8 @@
     {
         None,
         NotFound,
-        ValidationError
+        ValidationError,
+        UserAlreadyExists,
+        InvalidCredentials
     }
 }
