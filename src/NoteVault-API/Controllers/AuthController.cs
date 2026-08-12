@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NoteVault.BLL.DTOs.Auth;
 using NoteVault.BLL.Interfaces;
@@ -8,6 +9,7 @@ using NoteVault_API.Extensions.Results;
 namespace NoteVault_API.Controllers
 {
     [ApiController]
+    [Authorize]
     [ApiVersion(ApiVersions.V1)]
     [Route(ApiRoutes.Auth.RoutePrefix)]
     public class AuthController : ControllerBase

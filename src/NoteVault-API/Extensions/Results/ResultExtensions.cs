@@ -36,6 +36,8 @@ namespace NoteVault_API.Extensions.Results
             {
                 ErrorCode.NotFound => new NotFoundObjectResult(problem),
                 ErrorCode.ValidationError => new BadRequestObjectResult(problem),
+                ErrorCode.UserAlreadyExists => new ConflictObjectResult(problem),
+                ErrorCode.InvalidCredentials => new BadRequestObjectResult(problem),
                 _ => new ObjectResult(problem) { StatusCode = StatusCodes.Status500InternalServerError}
             };
         }
