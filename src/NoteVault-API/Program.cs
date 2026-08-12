@@ -10,6 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 builder.Services.AddApiVersioningSupport();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddApiAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseGlobalExceptionHandling();
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapApplicationEndpoints();
 
