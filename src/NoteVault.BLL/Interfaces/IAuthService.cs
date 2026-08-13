@@ -5,7 +5,7 @@ namespace NoteVault.BLL.Interfaces
 {
     public interface IAuthService
     {
-        Task<Result<AuthResponseDto>> RegisterAsync(UserRegisterDto request, CancellationToken cancellationToken = default);
-        Task<Result<AuthResponseDto>> LoginAsync(UserLoginDto request, CancellationToken cancellationToken = default);
+        Task<Result<UserRegisterResponseDto>> RegisterAsync(UserRegisterDto request, CancellationToken cancellationToken = default);
+        Task<Result<UserLoginResponseDto>> LoginAsync(UserLoginDto request, CancellationToken cancellationToken = default);
     }
 }

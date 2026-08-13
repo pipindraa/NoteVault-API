@@ -22,14 +22,14 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpPost(ApiRoutes.Auth.Register)]
-        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] UserRegisterDto request, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserRegisterResponseDto>> Register([FromBody] UserRegisterDto request, CancellationToken cancellationToken)
         {
             var result = await _authService.RegisterAsync(request, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpPost(ApiRoutes.Auth.Login)]
-        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] UserLoginDto request, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserLoginResponseDto>> Login([FromBody] UserLoginDto request, CancellationToken cancellationToken)
         {
             var result = await _authService.LoginAsync(request, cancellationToken);
             return result.ToActionResult();
