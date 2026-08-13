@@ -18,9 +18,12 @@ namespace NoteVault.DAL.Repositories
             _notes = context.Notes;
         }
 
-        public async Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default)
+        public async Task<List<Note>> GetAllAsync<TKey>(Guid userId, Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default)
         {
-            var query = _notes.Include(note => note.Tags).AsNoTracking();
+            var query = _notes
+                .Include(note => note.Tags)
+                .Where(note => note.UserId == userId)
+                .AsNoTracking();
 
             if (descending)
             {
@@ -34,12 +37,12 @@ namespace NoteVault.DAL.Repositories
             return await query.ToPagedListAsync(pageNumber, pageSize, cancellationToken);
         }
 
-        public async Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Note?> GetByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             return await _notes
                 .Include(note => note.Tags)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(note => note.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(note => note.Id == id && note.UserId == userId, cancellationToken);
         }
 
         public async Task<Note> AddAsync(Note note, CancellationToken cancellationToken = default)

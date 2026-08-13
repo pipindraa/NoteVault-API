@@ -5,8 +5,8 @@ namespace NoteVault.DAL.Interfaces
 {
     public interface INoteRepository
     {
-        Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default);
-        Task<Note?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<List<Note>> GetAllAsync<TKey>(Guid userId, Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default);
+        Task<Note?> GetByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken = default);
         Task<Note> AddAsync(Note note, CancellationToken cancellationToken = default);
         Task UpdateAsync(Note note, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
