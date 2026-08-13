@@ -10,10 +10,10 @@ namespace NoteVault_API.Extensions.DI
         public static IServiceCollection AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
-                if (jwtOptions == null)
-                {
-                    throw new InvalidOperationException("JwtOptions configuration section is missing");
-                }
+            if (jwtOptions is null)
+            {
+                throw new InvalidOperationException("JwtOptions configuration section is missing");
+            }
 
             services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
