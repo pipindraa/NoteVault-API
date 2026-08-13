@@ -35,8 +35,6 @@ namespace NoteVault_API.Extensions.DI
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
                 };      
             });
-
-            services.AddAuthentication();
             
             return services; 
         }
