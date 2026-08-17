@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NoteVault.DAL.Entities;
+using System.Reflection;
 
 namespace NoteVault.DAL.Data
 {
@@ -17,11 +18,7 @@ namespace NoteVault.DAL.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Notes)
-                .WithOne(n => n.User)
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
