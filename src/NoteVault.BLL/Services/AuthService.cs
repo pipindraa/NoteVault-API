@@ -1,4 +1,5 @@
-﻿using NoteVault.BLL.Common;
+﻿using Mapster;
+using NoteVault.BLL.Common;
 using NoteVault.BLL.DTOs.Auth;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
@@ -35,22 +36,13 @@ namespace NoteVault.BLL.Services
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);
 
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = request.Username,
-                Email = request.Email,
-                PasswordHash = passwordHash
-            };
+            var user = request.Adapt<User>();
+            user.Id = Guid.NewGuid();
+            user.PasswordHash = passwordHash;
 
             await _userRepository.AddAsync(user, cancellationToken);
 
-            var response = new UserRegisterResponseDto
-            {
-                UserId = user.Id,
-                Username = user.Username,
-                Email = user.Email
-            };
+            var response = user.Adapt<UserRegisterResponseDto>();
 
             return Result<UserRegisterResponseDto>.Success(response);
         }
