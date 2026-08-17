@@ -6,6 +6,6 @@
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public List<Note> Notes { get; set; } = new(); 
+        public ICollection<Note> Notes { get; set; } = new HashSet<Note>(); 
     }
 }
