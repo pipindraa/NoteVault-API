@@ -67,7 +67,6 @@ namespace NoteVault.BLL.Services
 
             var response = new UserLoginResponseDto
             {
-                UserId = user.Id,
                 Token = token
             };
 
