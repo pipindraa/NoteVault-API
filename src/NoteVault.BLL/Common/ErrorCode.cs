@@ -6,6 +6,7 @@
         NotFound,
         ValidationError,
         UserAlreadyExists,
-        InvalidCredentials
+        InvalidCredentials,
+        InternalServerError
     }
 }

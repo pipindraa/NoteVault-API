@@ -6,6 +6,7 @@ using NoteVault.BLL.Common;
 using Mapster;
 using NoteVault.BLL.DTOs.Pagination;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace NoteVault.BLL.Services
 {
@@ -81,11 +82,16 @@ namespace NoteVault.BLL.Services
                 var dto = note.Adapt<NoteResponseDto>();
                 return Result<NoteResponseDto>.Success(dto);
             }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning(ex, "Concurrency conflict during update for note {NoteId}.", noteId);
+
+                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to update note with id {NoteId}.", noteId);
-
-                return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
+                _logger.LogError(ex, "Unexpected error updating note {NoteId}.", noteId);
+                return Result<NoteResponseDto>.Failure(ErrorCode.InternalServerError);
             }
         }        
         public async Task<Result> DeleteAsync(Guid userId, Guid noteId, CancellationToken cancellationToken = default)
