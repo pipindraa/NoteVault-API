@@ -1,11 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NoteVault.BLL.Common;
+using NoteVault.BLL.DTOs.Auth;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace NoteVault.BLL.Services
 {
@@ -18,7 +19,7 @@ namespace NoteVault.BLL.Services
             _options = options.Value;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(AuthUserModel user)
         {
             var claims = new Claim[]
             {

@@ -55,7 +55,8 @@ namespace NoteVault.BLL.Services
                 return Result<UserLoginResponseDto>.Failure(ErrorCode.InvalidCredentials);
             }
 
-            var token = _jwtProvider.GenerateToken(user);
+            var authUserModel = user.Adapt<AuthUserModel>();
+            var token = _jwtProvider.GenerateToken(authUserModel);
 
             var response = new UserLoginResponseDto
             {

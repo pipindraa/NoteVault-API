@@ -1,9 +1,9 @@
-﻿using NoteVault.DAL.Entities;
+﻿using NoteVault.BLL.DTOs.Auth;
 
 namespace NoteVault.BLL.Interfaces
 {
     public interface IJwtProvider
     {
-        string GenerateToken(User user);
+        string GenerateToken(AuthUserModel user);
     }
 }
