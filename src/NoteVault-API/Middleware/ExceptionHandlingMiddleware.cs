@@ -25,20 +25,18 @@ namespace NoteVault_API.Middleware
                 _logger.LogError(ex, "An unhandled exception occurred.");
 
                 var statusCode = HttpStatusCode.InternalServerError;
-                var message = "An unexpected error occurred.";
 
-                await HandleExceptionAsync(context, statusCode, message);
+                await HandleExceptionAsync(context, statusCode);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, string message)
+        private async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode)
         {
             context.Response.StatusCode = (int)statusCode;
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int)statusCode,
-                Detail = message
+                Status = (int)statusCode
             };
 
             await context.Response.WriteAsJsonAsync(problemDetails);
