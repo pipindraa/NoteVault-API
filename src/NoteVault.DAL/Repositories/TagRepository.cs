@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NoteVault.DAL.Data;
 using NoteVault.DAL.Entities;
+using NoteVault.DAL.Extensions;
 using NoteVault.DAL.Interfaces;
 
 namespace NoteVault.DAL.Repositories
@@ -16,11 +17,11 @@ namespace NoteVault.DAL.Repositories
             _tags = context.Tags;
         }
 
-        public async Task<List<Tag>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Tag>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .AsNoTracking()
-                .ToListAsync(cancellationToken);
+                .ToPagedListAsync(pageNumber, pageSize, cancellationToken);
         }
 
         public async Task<Tag?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -30,7 +31,7 @@ namespace NoteVault.DAL.Repositories
                 .FirstOrDefaultAsync(tag => tag.Id == id, cancellationToken);
         }
 
-        public async Task<List<Tag>> GetByIdsAsync (IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        public async Task<List<Tag>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .Where(tag => ids.Contains(tag.Id))
