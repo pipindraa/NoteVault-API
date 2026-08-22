@@ -57,11 +57,11 @@ namespace NoteVault.BLL.Services
             note.UserId = userId;
             note.CreationDate = DateTime.UtcNow;
 
-            if (request.TagIds.Any())
+            if (request.TagIds is { Count: > 0 })
             {
                 var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
 
-                if (tags.Count != request.TagIds.Count)
+                if (tags.Count is var count && count != request.TagIds.Count)
                 {
                     return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
                 }
@@ -89,11 +89,11 @@ namespace NoteVault.BLL.Services
                 Description = request.Description
             };
 
-            if (request.TagIds.Any())
+            if (request.TagIds is { Count: > 0 })
             {
                 var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
 
-                if (tags.Count != request.TagIds.Count)
+                if (tags.Count is var count && count != request.TagIds.Count)
                 {
                     return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
                 }
