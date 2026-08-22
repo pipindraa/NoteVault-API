@@ -34,6 +34,7 @@ namespace NoteVault.DAL.Repositories
         public async Task<List<Tag>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
         {
             return await _tags
+                .AsNoTracking()
                 .Where(tag => ids.Contains(tag.Id))
                 .ToListAsync(cancellationToken);
         }
