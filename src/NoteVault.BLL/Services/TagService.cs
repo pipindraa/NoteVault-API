@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using NoteVault.BLL.Common;
+using NoteVault.BLL.DTOs.Pagination;
 using NoteVault.BLL.DTOs.Tags;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
@@ -16,9 +17,9 @@ namespace NoteVault.BLL.Services
             _tagRepository = tagRepository;
         }
 
-        public async Task<Result<IReadOnlyCollection<TagDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<TagDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var tags = await _tagRepository.GetAllAsync(cancellationToken);
+            var tags = await _tagRepository.GetAllAsync(request.PageNumber, request.PageSize, cancellationToken);
             var dtos = tags.Adapt<IReadOnlyCollection<TagDto>>();
 
             return Result<IReadOnlyCollection<TagDto>>.Success(dtos);

@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using NoteVault.BLL.DTOs.Pagination;
 using NoteVault.BLL.DTOs.Tags;
 using NoteVault.BLL.Interfaces;
 using NoteVault_API.Constants;
@@ -20,9 +21,9 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<TagDto>>> GetAll(CancellationToken cancellationToken)
+        public async Task<ActionResult<IReadOnlyCollection<TagDto>>> GetPage([FromQuery] PaginationRequest pagination, CancellationToken cancellationToken)
         {
-            var result = await _tagService.GetAllAsync(cancellationToken);
+            var result = await _tagService.GetAllAsync(pagination, cancellationToken);
             return result.ToActionResult();
         }
 
