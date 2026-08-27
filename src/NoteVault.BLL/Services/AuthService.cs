@@ -42,8 +42,8 @@ namespace NoteVault.BLL.Services
 
             await _userRepository.AddAsync(user, cancellationToken);
 
-            var authUserModel = user.Adapt<AuthUserModel>();
-            var token = _jwtProvider.GenerateToken(authUserModel);
+            var authUserDto = user.Adapt<AuthUserDto>();
+            var token = _jwtProvider.GenerateToken(authUserDto);
 
             var response = new UserRegisterResponseDto
             {
@@ -61,8 +61,8 @@ namespace NoteVault.BLL.Services
                 return Result<UserLoginResponseDto>.Failure(ErrorCode.InvalidCredentials);
             }
 
-            var authUserModel = user.Adapt<AuthUserModel>();
-            var token = _jwtProvider.GenerateToken(authUserModel);
+            var authUserDto = user.Adapt<AuthUserDto>();
+            var token = _jwtProvider.GenerateToken(authUserDto);
 
             var response = new UserLoginResponseDto
             {

@@ -4,6 +4,6 @@ namespace NoteVault.BLL.Interfaces
 {
     public interface IJwtProvider
     {
-        string GenerateToken(AuthUserModel user);
+        string GenerateToken(AuthUserDto user);
     }
 }
