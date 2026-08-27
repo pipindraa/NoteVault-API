@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using NoteVault.BLL.Common;
-using NoteVault_API.Constants;
 using System.Text;
 
 namespace NoteVault_API.Extensions.DI
@@ -10,13 +9,13 @@ namespace NoteVault_API.Extensions.DI
     {
         public static IServiceCollection AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtOptions = configuration.GetSection(ConfigurationSections.Jwt).Get<JwtOptions>();
+            var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
             if (jwtOptions is null)
             {
                 throw new InvalidOperationException("JwtOptions configuration section is missing");
             }
 
-            services.Configure<JwtOptions>(configuration.GetSection(ConfigurationSections.Jwt));
+            services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
             services.AddAuthentication(options =>
             {
