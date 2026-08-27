@@ -26,18 +26,17 @@ namespace NoteVault_API.Middleware
 
                 var statusCode = HttpStatusCode.InternalServerError;
 
-                await HandleExceptionAsync(context, statusCode);
+                await HandleExceptionAsync(context, statusCode, new[] { ex.Message });
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode)
+        private async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, IReadOnlyCollection<string> errors)
         {
             context.Response.StatusCode = (int)statusCode;
 
-            var problemDetails = new ProblemDetails
-            {
-                Status = (int)statusCode
-            };
+            var problemDetails = new ProblemDetails();
+
+            problemDetails.Extensions["errors"] = errors;
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
