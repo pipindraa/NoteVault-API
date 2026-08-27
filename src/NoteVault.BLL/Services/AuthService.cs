@@ -42,7 +42,13 @@ namespace NoteVault.BLL.Services
 
             await _userRepository.AddAsync(user, cancellationToken);
 
-            var response = user.Adapt<UserRegisterResponseDto>();
+            var authUserModel = user.Adapt<AuthUserModel>();
+            var token = _jwtProvider.GenerateToken(authUserModel);
+
+            var response = new UserRegisterResponseDto
+            {
+                Token = token
+            };
 
             return Result<UserRegisterResponseDto>.Success(response);
         }
