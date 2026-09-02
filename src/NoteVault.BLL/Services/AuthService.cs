@@ -11,13 +11,13 @@ namespace NoteVault.BLL.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IJwtProvider _jwtProvider;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+        public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _jwtProvider = jwtProvider;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<UserRegisterResponseDto>> RegisterAsync(UserRegisterDto request, CancellationToken cancellationToken = default)
@@ -44,7 +44,7 @@ namespace NoteVault.BLL.Services
 
             var response = new UserRegisterResponseDto
             {
-                Token = GenerateTokenForUser(user)
+                Token = _tokenService.GenerateToken(user)
             };
 
             return Result<UserRegisterResponseDto>.Success(response);
@@ -60,16 +60,10 @@ namespace NoteVault.BLL.Services
 
             var response = new UserLoginResponseDto
             {
-                Token = GenerateTokenForUser(user)
+                Token = _tokenService.GenerateToken(user)
             };
 
             return Result<UserLoginResponseDto>.Success(response);
-        }
-
-        private string GenerateTokenForUser(User user)
-        {
-            var authUserDto = user.Adapt<AuthUserDto>();
-            return _jwtProvider.GenerateToken(authUserDto);
         }
     }
 }

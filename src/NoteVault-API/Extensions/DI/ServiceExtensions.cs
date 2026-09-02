@@ -16,8 +16,9 @@ namespace NoteVault_API.Extensions.DI
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddScoped<IJwtProvider, JwtProvider>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddTransient<IJwtProvider, JwtProvider>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }
