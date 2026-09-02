@@ -7,12 +7,12 @@ namespace NoteVault_API.Extensions
         public static Guid GetUserId(this ClaimsPrincipal user)
         {
             var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim is null)
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
-                throw new InvalidOperationException("User ID claim is missing.");
+                throw new InvalidOperationException("User ID claim is missing or invalid.");
             }
 
-            return Guid.Parse(userIdClaim);
+            return userId;
         }
     }
 }
