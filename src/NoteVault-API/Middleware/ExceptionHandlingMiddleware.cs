@@ -5,6 +5,9 @@ namespace NoteVault_API.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
+        private const string ErrorsExtensionKey = "errors";
+        private const string UnexpectedErrorMessage = "An unexpected error occurred.";
+
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
@@ -26,7 +29,7 @@ namespace NoteVault_API.Middleware
 
                 var statusCode = HttpStatusCode.InternalServerError;
 
-                await HandleExceptionAsync(context, statusCode, new[] { ex.Message });
+                await HandleExceptionAsync(context, statusCode, new[] { UnexpectedErrorMessage });
             }
         }
 
@@ -36,7 +39,7 @@ namespace NoteVault_API.Middleware
 
             var problemDetails = new ProblemDetails();
 
-            problemDetails.Extensions["errors"] = errors;
+            problemDetails.Extensions[ErrorsExtensionKey] = errors;
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
