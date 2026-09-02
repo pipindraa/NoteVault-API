@@ -5,7 +5,8 @@
         None,
         NotFound,
         ValidationError,
-        UserAlreadyExists,
+        EmailAlreadyExists,
+        UsernameAlreadyExists,
         InvalidCredentials,
         InternalServerError
     }

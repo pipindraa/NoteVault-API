@@ -25,13 +25,13 @@ namespace NoteVault.BLL.Services
             var existingEmail = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
             if (existingEmail is not null)
             {
-                return Result<UserRegisterResponseDto>.Failure(ErrorCode.UserAlreadyExists);
+                return Result<UserRegisterResponseDto>.Failure(ErrorCode.EmailAlreadyExists);
             }
 
             var existingUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
             if (existingUsername is not null)
             {
-                return Result<UserRegisterResponseDto>.Failure(ErrorCode.UserAlreadyExists);
+                return Result<UserRegisterResponseDto>.Failure(ErrorCode.UsernameAlreadyExists);
             }
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);
