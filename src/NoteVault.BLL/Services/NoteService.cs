@@ -50,47 +50,36 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
         {
+            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
+            if (tagsResult.IsFailure)
+            {
+                return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
+            }
+
             var note = request.Adapt<Note>();
             note.Id = Guid.NewGuid();
             note.CreationDate = DateTime.UtcNow;
-
-            if (request.TagIds is { Count: > 0 })
-            {
-                var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
-
-                if (tags.Count is var count && count != request.TagIds.Count)
-                {
-                    return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
-                }
-
-                note.Tags = tags;
-            }
+            note.Tags = tagsResult.Value!;
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
-            var dto = createdNote.Adapt<NoteResponseDto>(); 
-            return Result<NoteResponseDto>.Success(dto);
+            return Result<NoteResponseDto>.Success(createdNote.Adapt<NoteResponseDto>());
         }
 
         public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
+            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
+            if (tagsResult.IsFailure)
+            {
+                return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
+            }
+
             var note = new Note
             {
                 Id = id,
                 Name = request.Name,
-                Description = request.Description
+                Description = request.Description,
+                Tags = tagsResult.Value!
             };
-
-            if (request.TagIds is { Count: > 0 })
-            {
-                var tags = await _tagRepository.GetByIdsAsync(request.TagIds, cancellationToken);
-
-                if (tags.Count is var count && count != request.TagIds.Count)
-                {
-                    return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
-                }
-
-                note.Tags = tags;
-            }
 
             try
             {
@@ -122,6 +111,24 @@ namespace NoteVault.BLL.Services
             }
 
             return Result.Success();
+        }
+
+        private async Task<Result<List<Tag>>> GetAndValidateTagsAsync(IEnumerable<Guid>? tagIds, CancellationToken cancellationToken)
+        {
+            if (tagIds is not { } ids || !ids.Any())
+            {
+                return Result<List<Tag>>.Success(new List<Tag>());
+            }
+            
+            var distinctTagIds = ids.Distinct().ToList();
+            var tags = await _tagRepository.GetByIdsAsync(distinctTagIds, cancellationToken);
+
+            if (tags is not { Count: var count } || count != distinctTagIds.Count)
+            {
+                return Result<List<Tag>>.Failure(ErrorCode.TagNotFound);
+            }
+
+            return Result<List<Tag>>.Success(tags);
         }
     }
 }
