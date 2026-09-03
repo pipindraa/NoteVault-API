@@ -8,6 +8,7 @@
         EmailAlreadyExists,
         UsernameAlreadyExists,
         InvalidCredentials,
-        InternalServerError
+        InternalServerError,
+        TagNotFound
     }
 }
