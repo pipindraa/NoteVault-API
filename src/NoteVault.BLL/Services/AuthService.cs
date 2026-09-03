@@ -42,10 +42,7 @@ namespace NoteVault.BLL.Services
 
             await _userRepository.AddAsync(user, cancellationToken);
 
-            var response = new UserRegisterResponseDto
-            {
-                Token = _tokenService.GenerateToken(user)
-            };
+            var response = UserRegisterResponseDto.Create(_tokenService.GenerateToken(user));
 
             return Result<UserRegisterResponseDto>.Success(response);
         }
@@ -58,10 +55,7 @@ namespace NoteVault.BLL.Services
                 return Result<UserLoginResponseDto>.Failure(ErrorCode.InvalidCredentials);
             }
 
-            var response = new UserLoginResponseDto
-            {
-                Token = _tokenService.GenerateToken(user)
-            };
+            var response = UserLoginResponseDto.Create(_tokenService.GenerateToken(user));
 
             return Result<UserLoginResponseDto>.Success(response);
         }
