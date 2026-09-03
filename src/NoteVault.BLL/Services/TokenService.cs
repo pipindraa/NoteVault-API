@@ -14,10 +14,12 @@ namespace NoteVault.BLL.Services
             _jwtProvider = jwtProvider;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateAccessToken(User user)
         {
             var authUserDto = user.Adapt<AuthUserDto>();
-            return _jwtProvider.GenerateToken(authUserDto);
+            var token = _jwtProvider.GenerateToken(authUserDto);
+
+            return token;
         }
     }
 }

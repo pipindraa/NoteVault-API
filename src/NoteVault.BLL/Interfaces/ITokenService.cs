@@ -4,6 +4,6 @@ namespace NoteVault.BLL.Interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(User user);
+        string GenerateAccessToken(User user);
     }
 }
