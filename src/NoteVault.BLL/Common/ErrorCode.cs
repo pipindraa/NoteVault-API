@@ -4,6 +4,10 @@
     {
         None,
         NotFound,
-        ValidationError
+        ValidationError,
+        EmailAlreadyExists,
+        UsernameAlreadyExists,
+        InvalidCredentials,
+        InternalServerError
     }
 }

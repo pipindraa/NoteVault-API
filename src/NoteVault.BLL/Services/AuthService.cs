@@ -1,0 +1,63 @@
+﻿using Mapster;
+using NoteVault.BLL.Common;
+using NoteVault.BLL.DTOs.Auth;
+using NoteVault.BLL.Interfaces;
+using NoteVault.DAL.Entities;
+using NoteVault.DAL.Interfaces;
+
+namespace NoteVault.BLL.Services
+{
+    public class AuthService : IAuthService
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly ITokenService _tokenService;
+
+        public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, ITokenService tokenService)
+        {
+            _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
+            _tokenService = tokenService;
+        }
+
+        public async Task<Result<UserRegisterResponseDto>> RegisterAsync(UserRegisterDto request, CancellationToken cancellationToken = default)
+        {
+            var existingEmail = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+            if (existingEmail is not null)
+            {
+                return Result<UserRegisterResponseDto>.Failure(ErrorCode.EmailAlreadyExists);
+            }
+
+            var existingUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
+            if (existingUsername is not null)
+            {
+                return Result<UserRegisterResponseDto>.Failure(ErrorCode.UsernameAlreadyExists);
+            }
+
+            var passwordHash = _passwordHasher.HashPassword(request.Password);
+
+            var user = request.Adapt<User>();
+            user.Id = Guid.NewGuid();
+            user.PasswordHash = passwordHash;
+
+            await _userRepository.AddAsync(user, cancellationToken);
+
+            var response = UserRegisterResponseDto.Create(_tokenService.GenerateAccessToken(user));
+
+            return Result<UserRegisterResponseDto>.Success(response);
+        }
+
+        public async Task<Result<UserLoginResponseDto>> LoginAsync(UserLoginDto request, CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+            if (user is null || !_passwordHasher.Verify(request.Password, user.PasswordHash))
+            {
+                return Result<UserLoginResponseDto>.Failure(ErrorCode.InvalidCredentials);
+            }
+
+            var response = UserLoginResponseDto.Create(_tokenService.GenerateAccessToken(user));
+
+            return Result<UserLoginResponseDto>.Success(response);
+        }
+    }
+}

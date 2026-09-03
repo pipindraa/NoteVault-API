@@ -6,6 +6,7 @@ using NoteVault.BLL.Common;
 using Mapster;
 using NoteVault.BLL.DTOs.Pagination;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace NoteVault.BLL.Services
 {
@@ -20,9 +21,10 @@ namespace NoteVault.BLL.Services
             _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
         {
             var notes = await _noteRepository.GetAllAsync(
+                userId,
                 note => note.CreationDate,
                 request.PageNumber,
                 request.PageSize,
@@ -33,9 +35,9 @@ namespace NoteVault.BLL.Services
             return Result<IReadOnlyCollection<NoteResponseDto>>.Success(dtos);
         }
 
-        public async Task<Result<NoteResponseDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> GetByIdAsync(Guid userId, Guid noteId, CancellationToken cancellationToken = default)
         {
-            var note = await _noteRepository.GetByIdAsync(id, cancellationToken);
+            var note = await _noteRepository.GetByIdAsync(userId, noteId, cancellationToken);
 
             if (note is null)
             {
@@ -46,10 +48,11 @@ namespace NoteVault.BLL.Services
             return Result<NoteResponseDto>.Success(dto);
         }
 
-        public async Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> CreateAsync(Guid userId, NoteCreateDto request, CancellationToken cancellationToken = default)
         {
             var note = request.Adapt<Note>();
             note.Id = Guid.NewGuid();
+            note.UserId = userId;
             note.CreationDate = DateTime.UtcNow;
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
@@ -57,11 +60,17 @@ namespace NoteVault.BLL.Services
             return Result<NoteResponseDto>.Success(dto);
         }
 
-        public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
+        public async Task<Result<NoteResponseDto>> UpdateAsync(Guid userId, Guid noteId, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
+            var existingNote = await _noteRepository.GetByIdAsync(userId, noteId, cancellationToken);
+            if (existingNote is null)
+            {
+                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
+            }
+
             var note = new Note
             {
-                Id = id,
+                Id = noteId,
                 Name = request.Name,
                 Description = request.Description
             };
@@ -73,23 +82,27 @@ namespace NoteVault.BLL.Services
                 var dto = note.Adapt<NoteResponseDto>();
                 return Result<NoteResponseDto>.Success(dto);
             }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning(ex, "Concurrency conflict during update for note {NoteId}.", noteId);
+
+                return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
+            }
             catch (Exception ex)
             {
-                var existingNote = await _noteRepository.GetByIdAsync(id, cancellationToken);
-
-                if (existingNote is null)
-                {
-                    return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
-                }
-
-                _logger.LogError(ex, "Failed to update note with id {NoteId}.", id);
-
-                return Result<NoteResponseDto>.Failure(ErrorCode.ValidationError);
+                _logger.LogError(ex, "Unexpected error updating note {NoteId}.", noteId);
+                return Result<NoteResponseDto>.Failure(ErrorCode.InternalServerError);
             }
         }        
-        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> DeleteAsync(Guid userId, Guid noteId, CancellationToken cancellationToken = default)
         {
-            var deleted = await _noteRepository.DeleteAsync(id, cancellationToken);
+            var existingNote = await _noteRepository.GetByIdAsync(userId, noteId, cancellationToken);
+            if (existingNote is null)
+            {
+                return Result.Failure(ErrorCode.NotFound);
+            }
+
+            var deleted = await _noteRepository.DeleteAsync(noteId, cancellationToken);
             if (!deleted)
             {
                 return Result.Failure(ErrorCode.NotFound);
