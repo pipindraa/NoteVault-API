@@ -17,9 +17,9 @@ namespace NoteVault.BLL.Services
             _tagRepository = tagRepository;
         }
 
-        public async Task<Result<IReadOnlyCollection<TagDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<TagDto>>> GetPageAsync(PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var tags = await _tagRepository.GetAllAsync(request.PageNumber, request.PageSize, cancellationToken);
+            var tags = await _tagRepository.GetPageAsync(request.PageNumber, request.PageSize, cancellationToken);
             var dtos = tags.Adapt<IReadOnlyCollection<TagDto>>();
 
             return Result<IReadOnlyCollection<TagDto>>.Success(dtos);
