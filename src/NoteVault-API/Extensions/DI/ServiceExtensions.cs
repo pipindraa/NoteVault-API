@@ -11,6 +11,8 @@ namespace NoteVault_API.Extensions.DI
         {
             services.AddScoped<INoteRepository, NoteRepository>();
             services.AddScoped<INoteService, NoteService>();
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITagService, TagService>();
 
             return services;
         }

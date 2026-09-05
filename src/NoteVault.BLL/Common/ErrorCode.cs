@@ -4,6 +4,7 @@
     {
         None,
         NotFound,
-        ValidationError
+        ValidationError,
+        TagNotFound
     }
 }
