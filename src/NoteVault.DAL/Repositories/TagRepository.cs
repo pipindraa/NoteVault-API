@@ -17,25 +17,26 @@ namespace NoteVault.DAL.Repositories
             _tags = context.Tags;
         }
 
-        public async Task<(List<Tag> Items, int TotalCount)> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(List<Tag> Items, int TotalCount)> GetPageAsync(Guid userId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .AsNoTracking()
+                .Where(tag => tag.UserId == userId)
                 .ToPagedListAsync(pageNumber, pageSize, cancellationToken);
         }
 
-        public async Task<Tag?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Tag?> GetByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .AsNoTracking()
-                .FirstOrDefaultAsync(tag => tag.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(tag => tag.Id == id && tag.UserId == userId, cancellationToken);
         }
 
-        public async Task<List<Tag>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        public async Task<List<Tag>> GetByIdsAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .AsNoTracking()
-                .Where(tag => ids.Contains(tag.Id))
+                .Where(tag => tag.UserId == userId && ids.Contains(tag.Id))
                 .ToListAsync(cancellationToken);
         }
 
@@ -46,10 +47,10 @@ namespace NoteVault.DAL.Repositories
             return tag;
         }
 
-        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             var deletedCount = await _tags
-                .Where(tag => tag.Id == id)
+                .Where(tag => tag.Id == id && tag.UserId == userId)
                 .ExecuteDeleteAsync(cancellationToken);
 
             return deletedCount != default;

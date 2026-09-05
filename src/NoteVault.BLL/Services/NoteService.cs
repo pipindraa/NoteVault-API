@@ -124,7 +124,7 @@ namespace NoteVault.BLL.Services
             }
             
             var distinctTagIds = ids.Distinct().ToList();
-            var tags = await _tagRepository.GetByIdsAsync(distinctTagIds, cancellationToken);
+            var tags = await _tagRepository.GetByIdsAsync(Guid.Empty, distinctTagIds, cancellationToken);
 
             if (tags is not { Count: var count } || count != distinctTagIds.Count)
             {
