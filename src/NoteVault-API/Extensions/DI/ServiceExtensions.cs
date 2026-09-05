@@ -1,6 +1,9 @@
-﻿using NoteVault.BLL.Common;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using NoteVault.BLL.Common;
 using NoteVault.BLL.Interfaces;
 using NoteVault.BLL.Services;
+using NoteVault.BLL.Validators;
 using NoteVault.DAL.Interfaces;
 using NoteVault.DAL.Repositories;
 
@@ -21,6 +24,9 @@ namespace NoteVault_API.Extensions.DI
             services.AddSingleton<IJwtProvider, JwtProvider>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
+
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssembly(typeof(NoteCreateDtoValidator).Assembly);
 
             return services;
         }
