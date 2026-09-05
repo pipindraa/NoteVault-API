@@ -1,12 +1,12 @@
-﻿using NoteVault.BLL.DTOs.Notes;
-using NoteVault.BLL.Interfaces;
-using NoteVault.DAL.Interfaces;
-using NoteVault.DAL.Entities;
-using NoteVault.BLL.Common;
-using Mapster;
-using NoteVault.BLL.DTOs.Pagination;
+﻿using Mapster;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using NoteVault.BLL.Common;
+using NoteVault.BLL.DTOs.Notes;
+using NoteVault.BLL.DTOs.Pagination;
+using NoteVault.BLL.Interfaces;
+using NoteVault.DAL.Entities;
+using NoteVault.DAL.Interfaces;
 
 namespace NoteVault.BLL.Services
 {
@@ -23,18 +23,20 @@ namespace NoteVault.BLL.Services
             _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetPageAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<PagedResponse<NoteResponseDto>>> GetPageAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var notes = await _noteRepository.GetPageAsync(
+            var (notes, totalCount) = await _noteRepository.GetPageAsync(
                 userId,
                 note => note.CreationDate,
                 request.PageNumber,
                 request.PageSize,
-                descending: true, 
+                descending: true,
                 cancellationToken);
 
             var dtos = notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
-            return Result<IReadOnlyCollection<NoteResponseDto>>.Success(dtos);
+
+            var response = new PagedResponse<NoteResponseDto>(dtos, request.PageNumber, request.PageSize, totalCount);
+            return Result<PagedResponse<NoteResponseDto>>.Success(response);
         }
 
         public async Task<Result<NoteResponseDto>> GetByIdAsync(Guid userId, Guid noteId, CancellationToken cancellationToken = default)
@@ -74,8 +76,9 @@ namespace NoteVault.BLL.Services
             if (existingNote is null)
             {
                 return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
-            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
+            }
 
+            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
             if (tagsResult.IsFailure)
             {
                 return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
@@ -107,7 +110,8 @@ namespace NoteVault.BLL.Services
                 _logger.LogError(ex, "Unexpected error updating note {NoteId}.", noteId);
                 return Result<NoteResponseDto>.Failure(ErrorCode.InternalServerError);
             }
-        }        
+        }
+        
         public async Task<Result> DeleteAsync(Guid userId, Guid noteId, CancellationToken cancellationToken = default)
         {
             var existingNote = await _noteRepository.GetByIdAsync(userId, noteId, cancellationToken);

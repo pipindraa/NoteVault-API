@@ -17,7 +17,7 @@ namespace NoteVault.DAL.Repositories
             _tags = context.Tags;
         }
 
-        public async Task<List<Tag>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(List<Tag> Items, int TotalCount)> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
             return await _tags
                 .AsNoTracking()
