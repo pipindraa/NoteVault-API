@@ -1,11 +1,12 @@
-﻿using NoteVault.BLL.DTOs.Notes;
-using NoteVault.BLL.Interfaces;
-using NoteVault.DAL.Interfaces;
-using NoteVault.DAL.Entities;
-using NoteVault.BLL.Common;
-using Mapster;
-using NoteVault.BLL.DTOs.Pagination;
+﻿using Mapster;
 using Microsoft.Extensions.Logging;
+using NoteVault.BLL.Common;
+using NoteVault.BLL.DTOs.Notes;
+using NoteVault.BLL.DTOs.Pagination;
+using NoteVault.BLL.DTOs.Tags;
+using NoteVault.BLL.Interfaces;
+using NoteVault.DAL.Entities;
+using NoteVault.DAL.Interfaces;
 
 namespace NoteVault.BLL.Services
 {
@@ -22,9 +23,9 @@ namespace NoteVault.BLL.Services
             _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<PagedResponse<NoteResponseDto>>> GetPageAsync(PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var notes = await _noteRepository.GetAllAsync(
+            var (notes, totalCount) = await _noteRepository.GetPageAsync(
                 note => note.CreationDate,
                 request.PageNumber,
                 request.PageSize,
@@ -32,7 +33,9 @@ namespace NoteVault.BLL.Services
                 cancellationToken);
 
             var dtos = notes.Adapt<IReadOnlyCollection<NoteResponseDto>>();
-            return Result<IReadOnlyCollection<NoteResponseDto>>.Success(dtos);
+
+            var response = new PagedResponse<NoteResponseDto>(dtos, request.PageNumber, request.PageSize, totalCount);
+            return Result<PagedResponse<NoteResponseDto>>.Success(response);
         }
 
         public async Task<Result<NoteResponseDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

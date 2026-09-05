@@ -6,7 +6,7 @@ namespace NoteVault.BLL.Interfaces
 {
     public interface INoteService
     {
-        Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(PaginationRequest request, CancellationToken cancellationToken = default);
+        Task<Result<PagedResponse<NoteResponseDto>>> GetPageAsync(PaginationRequest request, CancellationToken cancellationToken = default);
         Task<Result<NoteResponseDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default);
         Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default);

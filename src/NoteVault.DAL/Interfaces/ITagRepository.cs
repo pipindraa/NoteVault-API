@@ -4,7 +4,7 @@ namespace NoteVault.DAL.Interfaces
 {
     public interface ITagRepository
     {
-        Task<List<Tag>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+        Task<(List<Tag> Items, int TotalCount)> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
         Task<Tag?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<List<Tag>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
         Task<Tag> AddAsync(Tag tag, CancellationToken cancellationToken = default);

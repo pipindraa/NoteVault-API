@@ -21,9 +21,9 @@ namespace NoteVault_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<NoteResponseDto>>> GetAll([FromQuery] PaginationRequest pagination, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedResponse<NoteResponseDto>>> GetPage([FromQuery] PaginationRequest pagination, CancellationToken cancellationToken)
         {
-            var result = await _noteService.GetAllAsync (pagination, cancellationToken);
+            var result = await _noteService.GetPageAsync(pagination, cancellationToken);
             return result.ToActionResult();
         }
 
