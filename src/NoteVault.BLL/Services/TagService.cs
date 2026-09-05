@@ -17,19 +17,20 @@ namespace NoteVault.BLL.Services
             _tagRepository = tagRepository;
         }
 
-        public async Task<Result<PagedResponse<TagDto>>> GetPageAsync(PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<PagedResponse<TagDto>>> GetPageAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var (tags, totalCount) = await _tagRepository.GetPageAsync(request.PageNumber, request.PageSize, cancellationToken);
+            var (tags, totalCount) = await _tagRepository.GetPageAsync(userId, request.PageNumber, request.PageSize, cancellationToken);
             var dtos = tags.Adapt<IReadOnlyCollection<TagDto>>();
 
             var response = new PagedResponse<TagDto>(dtos, request.PageNumber, request.PageSize, totalCount);
             return Result<PagedResponse<TagDto>>.Success(response);
         }
 
-        public async Task<Result<TagDto>> CreateAsync(TagCreateDto request, CancellationToken cancellationToken = default)
+        public async Task<Result<TagDto>> CreateAsync(Guid userId, TagCreateDto request, CancellationToken cancellationToken = default)
         {
             var tag = request.Adapt<Tag>();
             tag.Id = Guid.NewGuid();
+            tag.UserId = userId;
 
             var createdTag = await _tagRepository.AddAsync(tag, cancellationToken);
             var dto = createdTag.Adapt<TagDto>();
@@ -37,9 +38,9 @@ namespace NoteVault.BLL.Services
             return Result<TagDto>.Success(dto);
         }
 
-        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> DeleteAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
-            var deleted = await _tagRepository.DeleteAsync(id, cancellationToken);
+            var deleted = await _tagRepository.DeleteAsync(userId, id, cancellationToken);
 
             if(!deleted)
             {
