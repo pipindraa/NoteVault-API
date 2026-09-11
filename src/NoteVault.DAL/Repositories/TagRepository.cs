@@ -27,9 +27,7 @@ namespace NoteVault.DAL.Repositories
 
         public async Task<Tag?> GetByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
-            return await _tags
-                .AsNoTracking()
-                .FirstOrDefaultAsync(tag => tag.Id == id && tag.UserId == userId, cancellationToken);
+            return (await GetByIdsAsync(userId, new[] { id }, cancellationToken)).FirstOrDefault();
         }
 
         public async Task<List<Tag>> GetByIdsAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
