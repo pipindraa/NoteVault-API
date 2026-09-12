@@ -26,40 +26,35 @@ namespace NoteVault_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyCollection<NoteResponseDto>>> GetPage([FromQuery] PaginationRequest pagination, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _noteService.GetAllAsync(userId, pagination, cancellationToken);
+            var result = await _noteService.GetAllAsync(User.GetUserId(), pagination, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpGet(ApiRoutes.Notes.IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _noteService.GetByIdAsync(userId, id, cancellationToken);
+            var result = await _noteService.GetByIdAsync(User.GetUserId(), id, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpPost]
         public async Task<ActionResult<NoteResponseDto>> Create([FromBody] NoteCreateDto request, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _noteService.CreateAsync(userId, request, cancellationToken);
+            var result = await _noteService.CreateAsync(User.GetUserId(), request, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpPut(ApiRoutes.Notes.IdRoute)]
         public async Task<ActionResult<NoteResponseDto>> Update([FromRoute] Guid id, [FromBody] NoteUpdateDto request, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _noteService.UpdateAsync(userId, id, request, cancellationToken);
+            var result = await _noteService.UpdateAsync(User.GetUserId(), id, request, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpDelete(ApiRoutes.Notes.IdRoute)]
         public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _noteService.DeleteAsync(userId, id, cancellationToken);
+            var result = await _noteService.DeleteAsync(User.GetUserId(), id, cancellationToken);
             return result.ToActionResult();
         }
     }
