@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NoteVault.BLL.Common;
 using NoteVault.BLL.DTOs.Notes;
 using NoteVault.BLL.DTOs.Pagination;
-using NoteVault.BLL.DTOs.Tags;
 using NoteVault.BLL.Interfaces;
 using NoteVault.DAL.Entities;
 using NoteVault.DAL.Interfaces;
@@ -13,13 +12,13 @@ namespace NoteVault.BLL.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
-        private readonly ITagRepository _tagRepository;
+        private readonly ITagValidator _tagValidator;
         private readonly ILogger<NoteService> _logger;
 
-        public NoteService(INoteRepository noteRepository,ITagRepository tagRepository, ILogger<NoteService> logger)
+        public NoteService(INoteRepository noteRepository, ITagValidator tagValidator, ILogger<NoteService> logger)
         {
             _noteRepository = noteRepository;
-            _tagRepository = tagRepository;
+            _tagValidator = tagValidator;
             _logger = logger;
         }
 
@@ -53,7 +52,7 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> CreateAsync(NoteCreateDto request, CancellationToken cancellationToken = default)
         {
-            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
+            var tagsResult = await _tagValidator.EnsureAllExistAsync(Guid.Empty, request.TagIds, cancellationToken);
             if (tagsResult.IsFailure)
             {
                 return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
@@ -70,7 +69,7 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> UpdateAsync(Guid id, NoteUpdateDto request, CancellationToken cancellationToken = default)
         {
-            var tagsResult = await GetAndValidateTagsAsync(request.TagIds, cancellationToken);
+            var tagsResult = await _tagValidator.EnsureAllExistAsync(Guid.Empty, request.TagIds, cancellationToken);
             if (tagsResult.IsFailure)
             {
                 return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
@@ -114,24 +113,6 @@ namespace NoteVault.BLL.Services
             }
 
             return Result.Success();
-        }
-
-        private async Task<Result<List<Tag>>> GetAndValidateTagsAsync(IEnumerable<Guid>? tagIds, CancellationToken cancellationToken)
-        {
-            if (tagIds is not { } ids || !ids.Any())
-            {
-                return Result<List<Tag>>.Success(new List<Tag>());
-            }
-            
-            var distinctTagIds = ids.Distinct().ToList();
-            var tags = await _tagRepository.GetByIdsAsync(Guid.Empty, distinctTagIds, cancellationToken);
-
-            if (tags is not { Count: var count } || count != distinctTagIds.Count)
-            {
-                return Result<List<Tag>>.Failure(ErrorCode.TagNotFound);
-            }
-
-            return Result<List<Tag>>.Success(tags);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace NoteVault_API.Extensions.DI
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<ITagValidator, TagValidator>();
 
             return services;
         }
