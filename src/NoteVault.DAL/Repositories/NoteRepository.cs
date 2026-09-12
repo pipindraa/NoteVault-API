@@ -18,7 +18,7 @@ namespace NoteVault.DAL.Repositories
             _notes = context.Notes;
         }
 
-        public async Task<List<Note>> GetAllAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default)
+        public async Task<(List<Note> Items, int TotalCount)> GetPageAsync<TKey>(Expression<Func<Note, TKey>> orderBy, int pageNumber, int pageSize, bool descending = true, CancellationToken cancellationToken = default)
         {
             var query = _notes.Include(note => note.Tags).AsNoTracking();
 
