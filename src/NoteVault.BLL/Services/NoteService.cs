@@ -21,9 +21,9 @@ namespace NoteVault.BLL.Services
             _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetAllAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyCollection<NoteResponseDto>>> GetPageAsync(Guid userId, PaginationRequest request, CancellationToken cancellationToken = default)
         {
-            var notes = await _noteRepository.GetAllAsync(
+            var notes = await _noteRepository.GetPageAsync(
                 userId,
                 note => note.CreationDate,
                 request.PageNumber,
