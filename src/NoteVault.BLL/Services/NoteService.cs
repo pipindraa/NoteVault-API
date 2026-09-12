@@ -84,13 +84,9 @@ namespace NoteVault.BLL.Services
                 return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
             }
 
-            var note = new Note
-            {
-                Id = noteId,
-                Name = request.Name,
-                Description = request.Description,
-                Tags = tagsResult.Value!
-            };
+            var note = request.Adapt<Note>();
+            note.Id = noteId;
+            note.Tags = tagsResult.Value!;
 
             try
             {
