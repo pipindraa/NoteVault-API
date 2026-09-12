@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>NoteVault_API</RootNamespace>
+    <UserSecretsId>0fa76a99-f8f1-4847-825b-9beda9fcf1e7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NoteVault.DAL.Entities;
+using System.Reflection;
 
 namespace NoteVault.DAL.Data
 {
@@ -7,9 +8,17 @@ namespace NoteVault.DAL.Data
     {
         public DbSet<Note> Notes { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
