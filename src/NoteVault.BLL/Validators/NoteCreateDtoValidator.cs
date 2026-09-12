@@ -1,21 +1,16 @@
 ﻿using FluentValidation;
 using NoteVault.BLL.DTOs.Notes;
-using NoteVault.DAL.Interfaces;
 using NoteVault.BLL.Validators.Extensions;
 
 namespace NoteVault.BLL.Validators
 {
     public class NoteCreateDtoValidator : AbstractValidator<NoteCreateDto>
     {
-        private readonly ITagRepository _tagRepository;
-
         private const int MaxNameLength = 100;
         private const int MaxDescriptionLength = 1000;
 
-        public NoteCreateDtoValidator(ITagRepository tagRepository)
+        public NoteCreateDtoValidator()
         {
-            _tagRepository = tagRepository;
-
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MaximumLength(MaxNameLength);
@@ -25,7 +20,11 @@ namespace NoteVault.BLL.Validators
                 .MaximumLength(MaxDescriptionLength);
 
             RuleFor(x => x.TagIds)
-                .MustBeValidTags(tagRepository);
+                .MustHaveUniqueElements();
+
+            RuleForEach(x => x.TagIds)
+                .NotEmpty()
+                .WithErrorCode("EmptyTagId");
         }
     }
 }
