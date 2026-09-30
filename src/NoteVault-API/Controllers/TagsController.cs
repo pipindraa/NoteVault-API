@@ -26,24 +26,21 @@ namespace NoteVault_API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResponse<TagDto>>> GetPage([FromQuery] PaginationRequest pagination, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _tagService.GetPageAsync(userId, pagination, cancellationToken);
+            var result = await _tagService.GetPageAsync(User.GetUserId(), pagination, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpPost]
         public async Task<ActionResult<TagDto>> Create([FromBody] TagCreateDto request, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _tagService.CreateAsync(userId, request, cancellationToken);
+            var result = await _tagService.CreateAsync(User.GetUserId(), request, cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpDelete(ApiRoutes.Tags.IdRoute)]
         public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var userId = User.GetUserId();
-            var result = await _tagService.DeleteAsync(userId, id, cancellationToken);
+            var result = await _tagService.DeleteAsync(User.GetUserId(), id, cancellationToken);
             return result.ToActionResult();
         }
     }
