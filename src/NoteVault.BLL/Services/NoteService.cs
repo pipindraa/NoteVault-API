@@ -13,13 +13,13 @@ namespace NoteVault.BLL.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
-        private readonly ITagValidator _tagValidator;
+        private readonly ITagRepository _tagRepository;
         private readonly ILogger<NoteService> _logger;
 
-        public NoteService(INoteRepository noteRepository, ITagValidator tagValidator, ILogger<NoteService> logger)
+        public NoteService(INoteRepository noteRepository, ITagRepository tagRepository, ILogger<NoteService> logger)
         {
             _noteRepository = noteRepository;
-            _tagValidator = tagValidator;
+            _tagRepository = tagRepository;
             _logger = logger;
         }
 
@@ -54,17 +54,15 @@ namespace NoteVault.BLL.Services
 
         public async Task<Result<NoteResponseDto>> CreateAsync(Guid userId, NoteCreateDto request, CancellationToken cancellationToken = default)
         {
-            var tagsResult = await _tagValidator.EnsureAllExistAsync(Guid.Empty, request.TagIds, cancellationToken);
-            if (tagsResult.IsFailure)
-            {
-                return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
-            }
-
             var note = request.Adapt<Note>();
             note.Id = Guid.NewGuid();
             note.UserId = userId;
             note.CreationDate = DateTime.UtcNow;
-            note.Tags = tagsResult.Value!;
+
+            if (request.TagIds is { Count: > 0 })
+            {
+                note.Tags = await _tagRepository.GetByIdsAsync(Guid.Empty, request.TagIds, cancellationToken);
+            }
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
             return Result<NoteResponseDto>.Success(createdNote.Adapt<NoteResponseDto>());
@@ -78,15 +76,13 @@ namespace NoteVault.BLL.Services
                 return Result<NoteResponseDto>.Failure(ErrorCode.NotFound);
             }
 
-            var tagsResult = await _tagValidator.EnsureAllExistAsync(Guid.Empty, request.TagIds, cancellationToken);
-            if (tagsResult.IsFailure)
-            {
-                return Result<NoteResponseDto>.Failure(tagsResult.Error!.Value);
-            }
-
             var note = request.Adapt<Note>();
             note.Id = noteId;
-            note.Tags = tagsResult.Value!;
+
+            if (request.TagIds is { Count: > 0 })
+            {
+                note.Tags = await _tagRepository.GetByIdsAsync(Guid.Empty, request.TagIds, cancellationToken);
+            }
 
             try
             {
