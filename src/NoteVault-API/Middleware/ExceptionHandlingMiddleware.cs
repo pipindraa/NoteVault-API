@@ -5,6 +5,8 @@ namespace NoteVault_API.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
+        private const string UnexpectedErrorMessage = "An unexpected error occurred.";
+
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
@@ -25,9 +27,8 @@ namespace NoteVault_API.Middleware
                 _logger.LogError(ex, "An unhandled exception occurred.");
 
                 var statusCode = HttpStatusCode.InternalServerError;
-                var message = "An unexpected error occurred.";
 
-                await HandleExceptionAsync(context, statusCode, message);
+                await HandleExceptionAsync(context, statusCode, UnexpectedErrorMessage);
             }
         }
 
