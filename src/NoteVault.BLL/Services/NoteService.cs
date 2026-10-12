@@ -61,7 +61,7 @@ namespace NoteVault.BLL.Services
 
             if (request.TagIds is { Count: > 0 })
             {
-                note.Tags = await _tagRepository.GetByIdsAsync(Guid.Empty, request.TagIds, cancellationToken);
+                note.Tags = await _tagRepository.GetByIdsAsync(userId, request.TagIds, cancellationToken);
             }
 
             var createdNote = await _noteRepository.AddAsync(note, cancellationToken);
@@ -78,10 +78,11 @@ namespace NoteVault.BLL.Services
 
             var note = request.Adapt<Note>();
             note.Id = noteId;
+            note.UserId = userId;
 
             if (request.TagIds is { Count: > 0 })
             {
-                note.Tags = await _tagRepository.GetByIdsAsync(Guid.Empty, request.TagIds, cancellationToken);
+                note.Tags = await _tagRepository.GetByIdsAsync(userId, request.TagIds, cancellationToken);
             }
 
             try
