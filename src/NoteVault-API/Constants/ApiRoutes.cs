@@ -14,5 +14,11 @@
             internal const string Register = "register";
             internal const string Login = "login";
         }
+
+        internal static class Tags
+        {
+            internal const string RoutePrefix = "api/v{version:apiVersion}/tags";
+            internal const string IdRoute = "{id:guid}";
+        }
     }
 }
