@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using NoteVault.BLL.DTOs.Notes;
+using NoteVault.BLL.Interfaces;
 using NoteVault.BLL.Validators.Extensions;
+using NoteVault.DAL.Interfaces;
 
 namespace NoteVault.BLL.Validators
 {
@@ -9,7 +11,7 @@ namespace NoteVault.BLL.Validators
         private const int MaxNameLength = 100;
         private const int MaxDescriptionLength = 1000;
 
-        public NoteUpdateDtoValidator()
+        public NoteUpdateDtoValidator(ITagRepository tagRepository, IUserContext userContext)
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -20,7 +22,8 @@ namespace NoteVault.BLL.Validators
                 .MaximumLength(MaxDescriptionLength);
 
             RuleFor(x => x.TagIds)
-                .MustHaveUniqueElements();
+                .MustHaveUniqueElements()
+                .MustBelongToCurrentUser(tagRepository, userContext);
 
             RuleForEach(x => x.TagIds)
                 .NotEmpty()
