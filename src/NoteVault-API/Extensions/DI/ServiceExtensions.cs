@@ -28,6 +28,9 @@ namespace NoteVault_API.Extensions.DI
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssembly(typeof(NoteCreateDtoValidator).Assembly);
 
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserContext, UserContext>();
+
             return services;
         }
     }
